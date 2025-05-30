@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Movie Stream</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+    .movie-details {
+      margin-bottom: 20px;
+    }
+    .movie-details h2 {
+      margin-top: 0;
+    }
+    video {
+      width: 100%;
+      max-height: 500px;
+      background: black;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .loading {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="movie-info" class="movie-details"></div>
+    <div id="player-section">
+      <div class="loading">Loading video...</div>
+    </div>
+  </div>
+
+  <script>
+    const tmdbApiKey = "8723ad7aaba98483edee474a2abc3c80";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+
+    if (id) {
+      // Step 1: Get movie details from TMDB
+      fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}&language=en-US`)
+        .then(res => res.json())
+        .then(movie => {
+          const infoDiv = document.getElementById("movie-info");
+          infoDiv.innerHTML = `
+            <h2>${movie.title} (${movie.release_date?.split('-')[0]})</h2>
+            <p><strong>Language:</strong> ${movie.original_language.toUpperCase()}</p>
+            <p><strong>Overview:</strong> ${movie.overview}</p>
+          `;
+        })
+        .catch(err => {
+          document.getElementById("movie-info").innerHTML = "<p>Error loading movie details.</p>";
+        });
+
+      // Step 2: Get streaming link from your API
+      fetch(`https://sainipankaj12.serv00.net/Movies/get.php?id=${id}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.url) throw new Error("No streaming link found");
+
+          const playerDiv = document.getElementById("player-section");
+          playerDiv.innerHTML = `
+            <video controls autoplay>
+              <source src="${data.url}" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          `;
+        })
+        .catch(err => {
+          document.getElementById("player-section").innerHTML = "<p>Video not available.</p>";
+          console.error(err);
+        });
+
+    } else {
+      document.body.innerHTML = "<p>Please provide a movie id in the URL like <code>?id=12345</code></p>";
+    }
+  </script>
+</body>
+</html>
