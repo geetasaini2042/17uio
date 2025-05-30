@@ -1,50 +1,342 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MoviesTech</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body {
+      margin: 0;
+      background: #121212;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    header {
+      background: #1f1f1f;
+      padding: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    #brandText {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .nav-right i {
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    #searchInput {
+      display: none;
+      width: 60%;
+      padding: 0.4rem;
+      border-radius: 5px;
+      background-color: #2b2b2b;
+      color: white;
+      border: none;
+    }
+
+    #searchInput::placeholder {
+      color: #aaa;
+    }
+
+    #doneBtn {
+      margin-left: 0.5rem;
+      padding: 5px 10px;
+      border-radius: 5px;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      display: none;
+      cursor: pointer;
+    }
+
+    #userAvatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    #userCard {
+      display: none;
+      position: absolute;
+      right: 10px;
+      top: 60px;
+      background: #2b2b2b;
+      border-radius: 8px;
+      padding: 0.5rem;
+      text-align: center;
+      z-index: 1000;
+    }
+
+    #userCard img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    #cardName {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    h2 {
+      padding: 1rem;
+      margin: 0;
+    }
+
+    .carousel-wrapper {
+      position: relative;
+    }
+
+    .carousel {
+      display: flex;
+      overflow: hidden;
+      scroll-behavior: smooth;
+      padding: 1rem;
+    }
+
+    .carousel-card {
+      min-width: 100%;
+      max-width: 100%;
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .carousel-card img {
+      width: 100%;
+      height: 60vh;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .play-now {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #00ffcc, #00ccff);
+      color: #000;
+      padding: 0.6rem 1rem;
+      border: none;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+    }
+
+    .dots {
+      text-align: left;
+      padding: 0 1rem 1rem;
+    }
+
+    .dot {
+      height: 12px;
+      width: 12px;
+      margin: 0 4px;
+      background-color: #888;
+      border-radius: 50%;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: #fff;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .card {
+      background-color: #1f1f1f;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+    }
+
+    .movie-title {
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    .release-date {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #aaa;
+    }
+  </style>
 </head>
 <body>
+<header>
+  <div id="brandText">MoviesTech</div>
+  <input type="text" id="searchInput" placeholder="मूवी खोजें..." />
+  <button id="doneBtn">Done</button>
+  <div class="nav-right">
+    <i class="fas fa-search" onclick="toggleSearch()"></i>
+    <img src="https://t.me/i/userpic/320/telegram.png" id="userAvatar" />
+  </div>
+</header>
+<div id="userCard">
+  <img src="https://t.me/i/userpic/320/telegram.png" id="cardPhoto" />
+  <div id="cardName">यूज़र</div>
+</div>
+<h2>अब सिनेमाघरों में</h2>
+<div class="carousel-wrapper">
+  <div class="carousel" id="carouselContainer"></div>
+  <div class="dots" id="carouselDots"></div>
+</div>
+<h2>2025 में रिलीज़ हुई मूवीज़</h2>
+<div class="grid-container" id="yearMovies"></div>
+<script>
+  const apiKey = "8723ad7aaba98483edee474a2abc3c80";
+  const imageBase = "https://image.tmdb.org/t/p/w500";
 
-  <header>
-    <i class="fas fa-arrow-left" onclick="history.back()"></i>
-    <span id="brandText">MoviesTech</span>
-    <input type="text" id="searchInput" placeholder="Search movies...">
-    <button id="doneButton">Done</button>
-    <div class="nav-right">
-      <i class="fas fa-search" id="searchToggle"></i>
-      <img src="https://via.placeholder.com/36" id="userPhoto" alt="User">
-    </div>
-    <div id="userCard">
-      <img src="https://via.placeholder.com/64" alt="User">
-      <div>User Name</div>
-    </div>
-  </header>
+  let page = 1;
+  let loading = false;
 
-  <!-- Now Playing Carousel -->
-  <section class="movies-section">
-    <h2>🎬 Now Playing</h2>
-    <div id="nowPlaying" class="scrolling-container">
-      <!-- Cards dynamically inserted -->
-    </div>
-    <div class="carousel-dots" id="carouselDots"></div>
-  </section>
+  async function getMovies(endpoint) {
+    const res = await fetch(endpoint);
+    const data = await res.json();
+    return data.results;
+  }
 
-  <!-- 2025 Movies -->
-  <section class="movies-section">
-    <h2>📅 2025 Movies</h2>
-    <div id="yearMovies" class="grid-container"></div>
-  </section>
+  async function loadCarousel() {
+    let nowPlaying = await getMovies(`https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=hi-IN&page=1`);
+    nowPlaying = nowPlaying.filter(m => m.poster_path);
+    if (nowPlaying.length < 7) {
+      const backup = await getMovies(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&primary_release_year=2025&page=1`);
+      nowPlaying = [...nowPlaying, ...backup.filter(m => m.poster_path)].slice(0, 7);
+    } else {
+      nowPlaying = nowPlaying.slice(0, 7);
+    }
 
-  <!-- Search Results -->
-  <section class="movies-section" id="searchResultsSection" style="display:none;">
-    <h2>🔍 Search Results</h2>
-    <div id="searchResults" class="grid-container"></div>
-  </section>
+    const container = document.getElementById("carouselContainer");
+    const dots = document.getElementById("carouselDots");
+    container.innerHTML = "";
+    dots.innerHTML = "";
 
-  <script src="script.js"></script>
+    nowPlaying.forEach((movie, i) => {
+      const card = document.createElement("div");
+      card.className = "carousel-card";
+      card.innerHTML = `
+        <img src="${imageBase + movie.poster_path}"/>
+        <button class="play-now" onclick="location.href='Search/stream.html?id=${movie.id}'">▶ Play Now</button>
+      `;
+      container.appendChild(card);
+      const dot = document.createElement("span");
+      dot.className = "dot";
+      if (i === 0) dot.classList.add("active");
+      dots.appendChild(dot);
+    });
+
+    let index = 0;
+    setInterval(() => moveCarousel(index = (index + 1) % 7), 3000);
+    container.addEventListener("scroll", () => {
+      const newIndex = Math.round(container.scrollLeft / container.clientWidth);
+      if (newIndex !== index) {
+        index = newIndex;
+        updateDots(index);
+      }
+    });
+
+    function moveCarousel(i) {
+      container.scrollTo({ left: i * container.clientWidth, behavior: 'smooth' });
+      updateDots(i);
+    }
+
+    function updateDots(i) {
+      document.querySelectorAll(".dot").forEach((d, j) => {
+        d.classList.toggle("active", j === i);
+      });
+    }
+  }
+
+  async function loadYearMovies() {
+    if (loading) return;
+    loading = true;
+    const res = await getMovies(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=release_date.desc&primary_release_year=2025&page=${page}`);
+    const container = document.getElementById("yearMovies");
+    res.forEach(movie => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.onclick = () => location.href = `Search/stream.html?id=${movie.id}`;
+      card.innerHTML = `
+        <img src="${movie.poster_path ? imageBase + movie.poster_path : ''}" />
+        <div class="movie-title">${movie.title}</div>
+        <div class="release-date">${movie.release_date || "Unknown"}</div>
+      `;
+      container.appendChild(card);
+    });
+    page++;
+    loading = false;
+  }
+
+  function toggleSearch() {
+    const input = document.getElementById("searchInput");
+    const done = document.getElementById("doneBtn");
+    input.style.display = input.style.display === "block" ? "none" : "block";
+    done.style.display = input.style.display;
+    input.focus();
+  }
+
+  document.getElementById("searchInput").addEventListener("keypress", e => {
+    if (e.key === "Enter") searchNow();
+  });
+
+  document.getElementById("doneBtn").onclick = searchNow;
+
+  function searchNow() {
+    const val = document.getElementById("searchInput").value.trim();
+    if (val) location.href = `search/index.html?query=${encodeURIComponent(val)}`;
+  }
+
+  document.getElementById("userAvatar").onclick = () => {
+    const card = document.getElementById("userCard");
+    card.style.display = card.style.display === "block" ? "none" : "block";
+  };
+
+  window.addEventListener("scroll", () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+      loadYearMovies();
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const tg = window.Telegram?.WebApp;
+    if (tg?.initDataUnsafe?.user) {
+      const user = tg.initDataUnsafe.user;
+      document.getElementById("cardName").innerText = user.first_name;
+      document.getElementById("userAvatar").src = user.photo_url;
+      document.getElementById("cardPhoto").src = user.photo_url;
+    }
+    loadCarousel();
+    loadYearMovies();
+  });
+</script>
 </body>
 </html>
