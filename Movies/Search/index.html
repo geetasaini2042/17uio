@@ -25,6 +25,9 @@
       border-radius: 10px;
       overflow: hidden;
       transition: transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
     }
     .card:hover {
       transform: scale(1.05);
@@ -59,7 +62,6 @@
   <script>
     const apiKey = "8723ad7aaba98483edee474a2abc3c80";
 
-    // Query Parameter से 'query' निकालना
     const urlParams = new URLSearchParams(window.location.search);
     const query = urlParams.get("query");
 
@@ -76,8 +78,9 @@
           }
 
           data.results.forEach(movie => {
-            const card = document.createElement("div");
+            const card = document.createElement("a");
             card.className = "card";
+            card.href = `stream.html?id=${movie.id}`;
 
             const img = document.createElement("img");
             img.className = "poster";
