@@ -11,35 +11,76 @@
       background-color: #121212;
       color: white;
     }
+
+    /* Sticky Video Player */
+    #videoContainer {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: black;
+    }
     video {
-      width: 100vw;
+      width: 100%;
       max-height: 60vh;
       background-color: black;
+      display: block;
     }
+
     .container {
       max-width: 900px;
       margin: auto;
       padding: 20px;
     }
+
     .movie-title {
       font-size: 22px;
       font-weight: bold;
       margin-top: 15px;
-    }
-    .description-toggle {
-      color: #1e90ff;
       cursor: pointer;
-      margin-top: 10px;
-      display: inline-block;
     }
+
+    .release-date {
+      font-size: 14px;
+      color: #bbb;
+      margin-top: 5px;
+    }
+
     .movie-description {
       display: none;
       margin-top: 10px;
+      background-color: #1e1e1e;
+      padding: 15px;
+      border-radius: 6px;
+      line-height: 1.6;
+      font-size: 15px;
+      white-space: pre-wrap;
     }
+
+    .meta-info {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #bbb;
+    }
+
+    .meta-info span {
+      display: inline-block;
+      margin-right: 15px;
+    }
+
+    .action-bar {
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-around;
+      font-size: 18px;
+      color: #ccc;
+      cursor: default;
+    }
+
     .related-section {
-      margin-top: 40px;
+      margin-top: 20px;
     }
-    .related-movie {
+
+    .related-movie, .trending-movie {
       display: inline-block;
       width: 30%;
       margin: 1%;
@@ -48,44 +89,162 @@
       overflow: hidden;
       text-align: center;
       transition: transform 0.2s;
+      cursor: pointer;
     }
-    .related-movie:hover {
+
+    .related-movie:hover, .trending-movie:hover {
       transform: scale(1.03);
     }
-    .related-movie img {
+
+    .related-movie img, .trending-movie img {
       width: 100%;
       height: auto;
+      display: block;
     }
-    .related-movie-title {
+
+    .related-movie-title, .trending-movie-title {
       padding: 10px;
       font-size: 14px;
+      color: white;
+      font-weight: 600;
     }
+
+    h3 {
+      margin-top: 40px;
+    }
+    .navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1e1e1e;
+  padding: 10px 15px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.nav-left i {
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+}
+.nav-center {
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+}
+#searchInput {
+  display: none;
+  flex: 1;
+  max-width: 60%;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.nav-right i {
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+}
+.nav-right img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* User card popup */
+#userCard {
+  display: none;
+  position: absolute;
+  top: 60px;
+  right: 15px;
+  background: #2c2c2c;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  width: 150px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+#userCard img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+#cardName {
+  color: white;
+  margin-top: 8px;
+  font-size: 14px;
+}
   </style>
 </head>
 <body>
+  <!-- ✅ Font Awesome (Add in <head> if not already) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- ✅ Video Player -->
-  <video 
-    id="videoPlayer"
-    controls
-    poster=""
-    controlsList="nodownload"
-    disablePictureInPicture
-    playsinline
-  >
-    <source id="videoSource" src="" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
+<!-- ✅ Navbar -->
+<div class="navbar">
+  <div class="nav-left" onclick="history.back()">
+    <i class="fas fa-arrow-left"></i>
+  </div>
+  
+  <div class="nav-center" id="brandText">MoviesTech</div>
+  <input type="text" id="searchInput" placeholder="Search movies..." />
+
+  <div class="nav-right">
+    <i class="fas fa-search" onclick="toggleSearch()"></i>
+    <img src="https://t.me/i/userpic/320/telegram.png" alt="User" id="userAvatar" onclick="toggleUserCard()" />
+  </div>
+</div>
+
+<!-- ✅ User Info Card -->
+<div id="userCard">
+  <img src="https://t.me/i/userpic/320/telegram.png" id="cardPhoto" />
+  <div id="cardName">Pankaj Saini</div>
+</div>
+  <!-- ✅ Sticky Video Player -->
+  <div id="videoContainer">
+    <video 
+      id="videoPlayer"
+      controls
+      poster=""
+      controlsList="nodownload"
+      disablePictureInPicture
+      playsinline
+    >
+      <source id="videoSource" src="" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+  </div>
 
   <!-- ✅ Movie Info & Related Section -->
   <div class="container">
-    <div class="movie-title" id="movieTitle">Loading...</div>
-    <div class="description-toggle" onclick="toggleDescription()">Show Description</div>
+    <div class="movie-title" id="movieTitle" onclick="toggleDescription()">Loading...</div>
+    <div class="release-date" id="releaseDate"></div>
     <div class="movie-description" id="movieDescription"></div>
+
+    <!-- Dummy Action Icons -->
+    <div class="action-bar">
+      <div>⏮️ Previous</div>
+      <div>🔄 Refresh</div>
+      <div>📤 Share</div>
+      <div>⏭️ Next</div>
+    </div>
 
     <div class="related-section">
       <h3>Related Movies</h3>
       <div id="relatedMovies"></div>
+    </div>
+
+    <div class="related-section">
+      <h3>Trending Movies (For You)</h3>
+      <div id="trendingMovies"></div>
     </div>
   </div>
 
@@ -97,21 +256,22 @@
     const video = document.getElementById("videoPlayer");
     const videoSource = document.getElementById("videoSource");
     const titleEl = document.getElementById("movieTitle");
+    const dateEl = document.getElementById("releaseDate");
     const descEl = document.getElementById("movieDescription");
     const relatedEl = document.getElementById("relatedMovies");
+    const trendingEl = document.getElementById("trendingMovies");
+    
 
-    // Description toggle
+    // Toggle Description on Title Click
     function toggleDescription() {
-      if (descEl.style.display === "none") {
+      if (descEl.style.display === "none" || descEl.style.display === "") {
         descEl.style.display = "block";
-        document.querySelector(".description-toggle").innerText = "Hide Description";
       } else {
         descEl.style.display = "none";
-        document.querySelector(".description-toggle").innerText = "Show Description";
       }
     }
 
-    // ✅ Fullscreen Landscape Orientation
+    // Fullscreen Orientation Lock
     video.addEventListener('fullscreenchange', handleFSChange);
     video.addEventListener('webkitfullscreenchange', handleFSChange);
     function handleFSChange() {
@@ -121,19 +281,32 @@
       }
     }
 
-    // ✅ Load data if ID provided
+    // Fetch Movie Details
     if (!id) {
       document.body.innerHTML = "<p style='padding:20px;'>Please provide a movie id in the URL like <code>?id=12345</code></p>";
     } else {
-      // Get Movie Details
       fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}&language=en-US`)
         .then(res => res.json())
         .then(data => {
-          titleEl.innerText = `${data.title} (${data.release_date?.split('-')[0]})`;
-          descEl.innerText = data.overview;
+          const year = data.release_date?.split('-')[0] || "N/A";
+          const genres = data.genres?.map(g => g.name).join(', ') || "N/A";
+          const runtime = data.runtime ? `${Math.floor(data.runtime / 60)}h ${data.runtime % 60}m` : 'N/A';
+          const rating = data.vote_average?.toFixed(1) || "N/A";
+
+          titleEl.innerText = `${data.title}`;
+          dateEl.innerText = `Release: ${data.release_date || "N/A"}`;
           video.setAttribute('poster', `https://image.tmdb.org/t/p/w780${data.backdrop_path}`);
 
-          // Related movies
+          descEl.innerHTML = `
+            <div class="meta-info">
+              <span><strong>Genre:</strong> ${genres}</span>
+              <span><strong>Runtime:</strong> ${runtime}</span>
+              <span><strong>Rating:</strong> ⭐ ${rating}</span>
+            </div>
+            <div>${data.overview || "No description available."}</div>
+          `;
+
+          // Related Movies
           fetch(`https://api.themoviedb.org/3/movie/${id}/similar?api_key=${tmdbApiKey}&language=en-US`)
             .then(res => res.json())
             .then(rel => {
@@ -141,14 +314,28 @@
               rel.results.slice(0, 6).forEach(movie => {
                 relatedEl.innerHTML += `
                   <div class="related-movie" onclick="location.href='?id=${movie.id}'">
-                    <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" />
+                    <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title}" />
                     <div class="related-movie-title">${movie.title}</div>
+                  </div>`;
+              });
+            });
+
+          // Trending Movies (For You)
+          fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${tmdbApiKey}`)
+            .then(res => res.json())
+            .then(trend => {
+              trendingEl.innerHTML = "";
+              trend.results.slice(0, 6).forEach(movie => {
+                trendingEl.innerHTML += `
+                  <div class="trending-movie" onclick="location.href='?id=${movie.id}'">
+                    <img src="https://image.tmdb.org/t/p/w300${movie.poster_path}" alt="${movie.title}" />
+                    <div class="trending-movie-title">${movie.title}</div>
                   </div>`;
               });
             });
         });
 
-      // ✅ Get Streaming Link from Your API
+      // Video Stream
       fetch(`https://sainipankaj12.serv00.net/Movies/get.php?id=${id}`)
         .then(res => res.json())
         .then(data => {
@@ -165,5 +352,59 @@
         });
     }
   </script>
+  <script>
+  function toggleSearch() {
+    const brand = document.getElementById("brandText");
+    const input = document.getElementById("searchInput");
+    if (input.style.display === "none" || input.style.display === "") {
+      brand.style.display = "none";
+      input.style.display = "block";
+      input.focus();
+    } else {
+      input.style.display = "none";
+      brand.style.display = "block";
+    }
+  }
+
+  document.getElementById("searchInput").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      const query = this.value.trim();
+      if (query) {
+        window.location.href = `index.html?query=${encodeURIComponent(query)}`;
+      }
+    }
+  });
+
+  function toggleUserCard() {
+    const card = document.getElementById("userCard");
+    card.style.display = card.style.display === "block" ? "none" : "block";
+  }
+
+  // Optional: Close card when clicking outside
+  window.addEventListener("click", (e) => {
+    if (!e.target.closest("#userAvatar") && !e.target.closest("#userCard")) {
+      document.getElementById("userCard").style.display = "none";
+    }
+  });
+</script>
+<script>
+  // ⏳ Wait for DOM load
+  document.addEventListener("DOMContentLoaded", () => {
+    // ✅ Telegram WebApp init
+    const tg = window.Telegram.WebApp;
+
+    // Check if user data is available
+    if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      const user = tg.initDataUnsafe.user;
+      document.getElementById("cardName").innerText = user.first_name;
+      document.getElementById("userAvatar").src = user.photo_url;
+      document.getElementById("cardPhoto").src = user.photo_url;
+    } else {
+      console.warn("Telegram user data not found");
+    }
+
+    // 👇 Your other JS like toggleSearch, toggleUserCard, etc.
+  });
+</script>
 </body>
 </html>
