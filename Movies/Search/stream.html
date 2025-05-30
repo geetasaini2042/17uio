@@ -2,13 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Movie Stream</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Movie Stream - Video.js Player</title>
+
+  <!-- Video.js CSS -->
+  <link href="https://vjs.zencdn.net/8.20.0/video-js.css" rel="stylesheet" />
+
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: #121212;
-      color: white;
+      color: #fff;
       margin: 0;
       padding: 20px;
     }
@@ -16,78 +20,185 @@
       max-width: 900px;
       margin: auto;
     }
-    .movie-details {
+    .video-wrapper {
       margin-bottom: 20px;
     }
-    .movie-details h2 {
-      margin-top: 0;
+    .movie-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
-    video {
+    .description-toggle {
+      color: #00aeff;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    .movie-description {
+      display: none;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+    .related-movies {
+      margin-top: 30px;
+    }
+    .related-movies h3 {
+      margin-bottom: 15px;
+      border-bottom: 1px solid #333;
+      padding-bottom: 8px;
+    }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 15px;
+    }
+    .related-grid img {
       width: 100%;
-      max-height: 500px;
-      background: black;
-      border-radius: 10px;
-      margin-top: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      object-fit: cover;
+      height: 210px;
+      background: #222;
     }
-    .loading {
+    .related-grid img:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+    .error {
+      color: #ff4c4c;
       text-align: center;
-      margin-top: 50px;
-      font-size: 18px;
+      margin: 40px 0;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div id="movie-info" class="movie-details"></div>
-    <div id="player-section">
-      <div class="loading">Loading video...</div>
-    </div>
+
+<div class="container">
+  <div class="video-wrapper">
+    <video
+      id="movie-player"
+      class="video-js vjs-default-skin"
+      controls
+      preload="auto"
+      width="100%"
+      height="400"
+      poster=""
+      data-setup='{}'
+      playsinline
+    >
+      <source src="" type="video/mp4" />
+      <p class="vjs-no-js">
+        To view this video please enable JavaScript, and consider upgrading to a
+        web browser that
+        <a href="https://videojs.com/html5-video-support/" target="_blank"
+          >supports HTML5 video</a
+        >
+      </p>
+    </video>
   </div>
 
-  <script>
-    const tmdbApiKey = "8723ad7aaba98483edee474a2abc3c80";
+  <div class="movie-title" id="movie-title">Loading...</div>
+  <div class="description-toggle" id="desc-toggle">Show Description ⯈</div>
+  <div class="movie-description" id="movie-description"></div>
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get("id");
+  <div class="related-movies">
+    <h3>Related Movies</h3>
+    <div class="related-grid" id="related-container">
+      <p>Loading related movies...</p>
+    </div>
+  </div>
+</div>
 
-    if (id) {
-      // Step 1: Get movie details from TMDB
-      fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}&language=en-US`)
-        .then(res => res.json())
-        .then(movie => {
-          const infoDiv = document.getElementById("movie-info");
-          infoDiv.innerHTML = `
-            <h2>${movie.title} (${movie.release_date?.split('-')[0]})</h2>
-            <p><strong>Language:</strong> ${movie.original_language.toUpperCase()}</p>
-            <p><strong>Overview:</strong> ${movie.overview}</p>
-          `;
-        })
-        .catch(err => {
-          document.getElementById("movie-info").innerHTML = "<p>Error loading movie details.</p>";
-        });
+<!-- Video.js JS -->
+<script src="https://vjs.zencdn.net/8.20.0/video.min.js"></script>
 
-      // Step 2: Get streaming link from your API
-      fetch(`https://sainipankaj12.serv00.net/Movies/get.php?id=${id}`)
-        .then(res => res.json())
-        .then(data => {
-          if (!data.url) throw new Error("No streaming link found");
+<script>
+  const tmdbApiKey = "8723ad7aaba98483edee474a2abc3c80";
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get("id");
 
-          const playerDiv = document.getElementById("player-section");
-          playerDiv.innerHTML = `
-            <video controls autoplay>
-              <source src="${data.url}" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          `;
-        })
-        .catch(err => {
-          document.getElementById("player-section").innerHTML = "<p>Video not available.</p>";
-          console.error(err);
-        });
-
+  // Toggle description visibility
+  document.getElementById('desc-toggle').addEventListener('click', () => {
+    const desc = document.getElementById('movie-description');
+    const toggle = document.getElementById('desc-toggle');
+    if (desc.style.display === 'none' || desc.style.display === '') {
+      desc.style.display = 'block';
+      toggle.textContent = "Hide Description ⯆";
     } else {
-      document.body.innerHTML = "<p>Please provide a movie id in the URL like <code>?id=12345</code></p>";
+      desc.style.display = 'none';
+      toggle.textContent = "Show Description ⯈";
     }
-  </script>
+  });
+
+  if (!id) {
+    document.body.innerHTML = "<p style='text-align:center;padding:20px;'>⚠️ Please provide a movie id in the URL like <code>?id=12345</code></p>";
+  } else {
+    // Fetch movie details
+    fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}&language=en-US`)
+      .then(res => res.json())
+      .then(movie => {
+        if (movie.success === false) throw new Error("Movie not found");
+        document.getElementById("movie-title").textContent = `${movie.title} (${movie.release_date?.split('-')[0] || ''})`;
+        document.getElementById("movie-description").textContent = movie.overview || "No description available.";
+
+        // Set poster on video player
+        const player = videojs('movie-player');
+        player.poster(`https://image.tmdb.org/t/p/w780${movie.backdrop_path || movie.poster_path}`);
+
+        // Fetch related movies by genre
+        const genreId = movie.genres && movie.genres.length ? movie.genres[0].id : null;
+        if (genreId) {
+          fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${tmdbApiKey}&with_genres=${genreId}&language=en-US`)
+            .then(res => res.json())
+            .then(data => {
+              const relatedContainer = document.getElementById('related-container');
+              relatedContainer.innerHTML = '';
+              if (data.results && data.results.length > 0) {
+                data.results.slice(0, 10).forEach(m => {
+                  if (!m.poster_path) return;
+                  const img = document.createElement('img');
+                  img.src = `https://image.tmdb.org/t/p/w342${m.poster_path}`;
+                  img.title = m.title;
+                  img.alt = m.title;
+                  img.onclick = () => window.location.href = `?id=${m.id}`;
+                  relatedContainer.appendChild(img);
+                });
+              } else {
+                relatedContainer.innerHTML = '<p>No related movies found.</p>';
+              }
+            })
+            .catch(() => {
+              document.getElementById('related-container').innerHTML = '<p class="error">Error loading related movies.</p>';
+            });
+        } else {
+          document.getElementById('related-container').innerHTML = '<p>No related movies found.</p>';
+        }
+      })
+      .catch(() => {
+        document.getElementById("movie-title").textContent = "❌ Error loading movie details.";
+      });
+
+    // Fetch video stream and set source in video.js player
+    fetch(`https://sainipankaj12.serv00.net/Movies/get.php?id=${id}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.url) throw new Error("No video URL");
+
+        const player = videojs('movie-player');
+        player.src({ src: data.url, type: 'video/mp4' });
+        player.play().catch(() => {
+          // Autoplay might be blocked; user can click play
+        });
+      })
+      .catch(() => {
+        const container = document.querySelector('.video-wrapper');
+        container.innerHTML = `<p class='error'>❌ Video not available.</p>`;
+      });
+  }
+</script>
+
 </body>
 </html>
