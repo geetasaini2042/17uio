@@ -1,213 +1,50 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Now Playing & 2025 Movies</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #121212;
-      color: white;
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      padding: 1rem;
-      background-color: #1f1f1f;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 0.6rem;
-      font-size: 1rem;
-      border: none;
-      border-radius: 5px;
-      background-color: #2b2b2b;
-      color: white;
-    }
-
-    input[type="text"]::placeholder {
-      color: #aaa;
-    }
-
-    .movies-section {
-      padding: 1rem;
-    }
-
-    .scrolling-container {
-      display: flex;
-      overflow-x: auto;
-      gap: 1rem;
-      padding: 1rem 0;
-    }
-
-    .grid-container {
-      display: grid;
-      gap: 1rem;
-      padding: 1rem 0;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-
-    .card {
-      position: relative;
-      background-color: #1f1f1f;
-      border-radius: 10px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .card:hover {
-      transform: scale(1.03);
-    }
-
-    .card img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-    }
-
-    .language-tag {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 2px 6px;
-      font-size: 0.7rem;
-      border-radius: 4px;
-    }
-
-    .movie-title {
-      padding: 0.5rem;
-      font-size: 0.95rem;
-      text-align: center;
-    }
-
-    .release-date {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #bbb;
-      margin-top: -0.5rem;
-      padding-bottom: 0.5rem;
-    }
-
-    .show-more {
-      display: block;
-      width: fit-content;
-      margin: 1rem auto 2rem;
-      padding: 0.6rem 1.2rem;
-      background-color: #333;
-      color: white;
-      text-align: center;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoviesTech</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
+
   <header>
-    <input type="text" id="searchBox" placeholder="सर्च करें मूवी... (उदा. Animal, Pathaan)" />
+    <i class="fas fa-arrow-left" onclick="history.back()"></i>
+    <span id="brandText">MoviesTech</span>
+    <input type="text" id="searchInput" placeholder="Search movies...">
+    <button id="doneButton">Done</button>
+    <div class="nav-right">
+      <i class="fas fa-search" id="searchToggle"></i>
+      <img src="https://via.placeholder.com/36" id="userPhoto" alt="User">
+    </div>
+    <div id="userCard">
+      <img src="https://via.placeholder.com/64" alt="User">
+      <div>User Name</div>
+    </div>
   </header>
 
+  <!-- Now Playing Carousel -->
   <section class="movies-section">
-    <h2>अब सिनेमाघरों में (Hindi Only)</h2>
-    <div class="scrolling-container" id="nowPlaying"></div>
+    <h2>🎬 Now Playing</h2>
+    <div id="nowPlaying" class="scrolling-container">
+      <!-- Cards dynamically inserted -->
+    </div>
+    <div class="carousel-dots" id="carouselDots"></div>
   </section>
 
+  <!-- 2025 Movies -->
   <section class="movies-section">
-    <h2>2025 में रिलीज़ हुई मूवीज़</h2>
-    <div class="grid-container" id="yearMovies"></div>
-    <a class="show-more" href="showmore.html?req=2025">और देखें</a>
+    <h2>📅 2025 Movies</h2>
+    <div id="yearMovies" class="grid-container"></div>
   </section>
 
+  <!-- Search Results -->
   <section class="movies-section" id="searchResultsSection" style="display:none;">
-    <h2>खोज परिणाम</h2>
-    <div class="grid-container" id="searchResults"></div>
+    <h2>🔍 Search Results</h2>
+    <div id="searchResults" class="grid-container"></div>
   </section>
 
-  <script>
-    const apiKey = "8723ad7aaba98483edee474a2abc3c80";
-    const imageBase = "https://image.tmdb.org/t/p/w500";
-    const placeholderImg = "https://via.placeholder.com/300x450?text=No+Image";
-
-    function createMovieCard(movie) {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.onclick = () => {
-        window.location.href = `getMovie.html?id=${movie.id}`;
-      };
-
-      const img = document.createElement("img");
-      img.src = movie.poster_path ? imageBase + movie.poster_path : placeholderImg;
-
-      const langTag = document.createElement("div");
-      langTag.className = "language-tag";
-      langTag.textContent = movie.original_language.toUpperCase();
-
-      const title = document.createElement("div");
-      title.className = "movie-title";
-      title.textContent = movie.title;
-
-      const release = document.createElement("div");
-      release.className = "release-date";
-      release.textContent = movie.release_date || "Unknown Date";
-
-      card.appendChild(img);
-      card.appendChild(langTag);
-      card.appendChild(title);
-      card.appendChild(release);
-
-      return card;
-    }
-
-    async function loadNowPlaying() {
-      const res = await fetch(`https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=hi-IN&page=1`);
-      const data = await res.json();
-      const hindiMovies = data.results.filter(movie => movie.original_language === "hi");
-      const container = document.getElementById("nowPlaying");
-      hindiMovies.forEach(movie => {
-        container.appendChild(createMovieCard(movie));
-      });
-    }
-
-    async function load2025Movies() {
-      const res = await fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=en-US&sort_by=release_date.desc&primary_release_year=2025&page=1`);
-      const data = await res.json();
-      const container = document.getElementById("yearMovies");
-      data.results.forEach(movie => {
-        container.appendChild(createMovieCard(movie));
-      });
-    }
-
-    async function searchMovies(query) {
-      const section = document.getElementById("searchResultsSection");
-      const container = document.getElementById("searchResults");
-      container.innerHTML = "";
-      section.style.display = "none";
-
-      if (!query) return;
-
-      const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=hi-IN&query=${encodeURIComponent(query)}`);
-      const data = await res.json();
-      if (data.results.length > 0) {
-        section.style.display = "block";
-        data.results.forEach(movie => {
-          container.appendChild(createMovieCard(movie));
-        });
-      }
-    }
-
-    document.getElementById("searchBox").addEventListener("input", function (e) {
-      searchMovies(e.target.value.trim());
-    });
-
-    loadNowPlaying();
-    load2025Movies();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
