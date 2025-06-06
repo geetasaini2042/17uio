@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>App Details</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 15px;
+      background-color: #f0f2f5;
+    }
+    .app-header {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .app-header img {
+      width: 80px;
+      height: 80px;
+      border-radius: 18px;
+      margin-right: 15px;
+    }
+    .app-title {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    table {
+      width: 100%;
+      background: #fff;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f8f8f8;
+      font-weight: bold;
+    }
+    .screenshot-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 10px;
+      margin: 10px 0;
+      padding-bottom: 10px;
+    }
+    .screenshot-container img {
+      flex: 0 0 auto;
+      width: 200px;
+      height: auto;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .description {
+      background: #fff;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .download-btn {
+      margin: 20px auto;
+      display: block;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007aff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .confirm-card {
+      background: #fff;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .confirm-card a {
+      display: inline-block;
+      margin-top: 10px;
+      background: green;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    .review {
+      background: #fff;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .stars svg {
+      width: 20px;
+      height: 20px;
+      fill: gold;
+    }
+    .loader {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 18px;
+      color: #888;
+    }
+    .collapse-btn {
+      background: none;
+      border: none;
+      color: #007aff;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .zoom-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(0,0,0,0.85);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+    .zoom-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+    .zoom-close {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div id="app-details" class="loader">🔄 Loading App Info...</div>  <div id="zoomModal" class="zoom-modal" onclick="closeZoom()">
+    <span class="zoom-close" onclick="closeZoom(event)">×</span>
+    <img id="zoomImage" src="" alt="Zoomed Screenshot" />
+  </div>  <script>
+    const params = new URLSearchParams(window.location.search);
+    const packageName = params.get('package');
+    let descExpanded = false;
+
+    function truncateHTML(html, maxChars = 300) {
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      const text = div.textContent || div.innerText || "";
+      return text.length > maxChars ? text.substring(0, maxChars) + "..." : text;
+    }
+
+    function toggleDescription() {
+      const para = document.getElementById("desc-para");
+      const btn = document.getElementById("desc-toggle-btn");
+      if (descExpanded) {
+        para.innerHTML = para.dataset.short;
+        btn.textContent = "Show More";
+      } else {
+        para.innerHTML = para.dataset.full;
+        btn.textContent = "Show Less";
+      }
+      descExpanded = !descExpanded;
+    }
+
+    function openZoom(src) {
+      document.getElementById('zoomImage').src = src;
+      document.getElementById('zoomModal').style.display = 'flex';
+    }
+
+    function closeZoom(event) {
+      if (event) event.stopPropagation();
+      document.getElementById('zoomModal').style.display = 'none';
+      document.getElementById('zoomImage').src = '';
+    }
+
+    function renderStars(rating) {
+      const rounded = Math.round(rating * 2) / 2;
+      const fullStars = Math.floor(rounded);
+      const halfStar = rounded % 1 !== 0;
+      let stars = '';
+
+      for (let i = 0; i < fullStars; i++) {
+        stars += '<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.63-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.45 4.73L5.82 21z"/></svg>';
+      }
+      if (halfStar) {
+        stars += '<svg viewBox="0 0 24 24"><path d="M12 15.4V5.1l1.45 3.26L17 9.24l-3.55 3.09.95 4.1L12 15.4z"/></svg>';
+      }
+      for (let i = fullStars + (halfStar ? 1 : 0); i < 5; i++) {
+        stars += '<svg viewBox="0 0 24 24"><path fill="#ddd" d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73-1.63 7.03L12 17.27l6.18 3.73-1.64-7.03L22 9.24z"/></svg>';
+      }
+      return `<div class="stars">${stars}</div>`;
+    }
+
+    async function loadAppDetails() {
+      const container = document.getElementById("app-details");
+      if (!packageName) {
+        container.textContent = "⚠️ No package name provided.";
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://manish-bhaiyas-bot.onrender.com/api/app-details?package=${encodeURIComponent(packageName)}`);
+        const app = await res.json();
+        const shortDesc = truncateHTML(app.description || 'No description available.');
+
+        container.innerHTML = `
+          <div class="app-header">
+            <img src="${app.icon}" alt="${app.title}" />
+            <div>
+              <div class="app-title">${app.title}</div>
+              <div>${app.summary || ''}</div>
+            </div>
+          </div>
+
+          <table>
+            <tr><th>Developer</th><td>${app.developer}</td></tr>
+            <tr><th>Installs</th><td>${app.installs}</td></tr>
+            <tr><th>Rating</th><td>${renderStars(app.score)}</td></tr>
+            <tr><th>Size</th><td>${app.size}</td></tr>
+            <tr><th>Version</th><td>${app.version}</td></tr>
+            <tr><th>Updated</th><td>${app.updated}</td></tr>
+          </table>
+
+          <div class="screenshot-container">
+            ${(app.screenshots || []).map(s => `<img src="${s}" alt="screenshot" onclick="openZoom('${s}')" />`).join('')}
+          </div>
+
+          <div class="description">
+            <h3>Description:</h3>
+            <p id="desc-para" data-full="${app.descriptionHTML}" data-short="${shortDesc}">${shortDesc}</p>
+            ${(app.descriptionHTML && app.descriptionHTML.length > 300) ? '<button id="desc-toggle-btn" class="collapse-btn" onclick="toggleDescription()">Show More</button>' : ''}
+          </div>
+
+          <button class="download-btn" onclick="fetchDownloadLink()">Download Premium</button>
+          <div id="download-card"></div>
+
+          ${app.reviews && app.reviews.length ? `
+            <div id="reviews-container">
+              <h3>User Reviews:</h3>
+              ${app.reviews.map(r => `
+                <div class="review">
+                  <div><strong>${r.userName}</strong></div>
+                  ${renderStars(r.score)}
+                  <div>${r.text}</div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        `;
+      } catch (err) {
+        container.innerHTML = "❌ Failed to load app details. Please check your internet or try later.";
+        console.error(err);
+      }
+    }
+
+    async function fetchDownloadLink() {
+      const card = document.getElementById("download-card");
+      card.innerHTML = "🔄 Fetching download link...";
+      try {
+        const res = await fetch(`https://sainipankaj12.serv00.net/get.php?package=${encodeURIComponent(packageName)}`);
+        const url = await res.text();
+        card.innerHTML = `
+          <div class="confirm-card">
+            <div><strong>✅ Download Ready!</strong></div>
+            <a href="${url}" target="_blank">Download Confirm</a>
+          </div>
+        `;
+      } catch (err) {
+        card.innerHTML = "<div class='confirm-card'>❌ Failed to get download link.</div>";
+        console.error(err);
+      }
+    }
+
+    loadAppDetails();
+  </script></body>
+</html>
