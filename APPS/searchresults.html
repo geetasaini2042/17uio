@@ -37,6 +37,32 @@
     .file-button:hover {
       background: linear-gradient(90deg, #0d47a1, #1565c0);
     }
+    .icon-back {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  width: 44px;
+  height: 44px;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  transition: background-color 0.2s ease;
+}
+
+.icon-back:hover {
+  background-color: #f0f0f0;
+}
+
+.icon-back svg {
+  width: 24px;
+  height: 24px;
+}
     .timestamp {
       font-size: 0.85em;
       color: #ddd;
@@ -88,6 +114,11 @@
   </style>
 </head>
 <body>
+  <button class="icon-back" onclick="window.history.back()" aria-label="Go back">
+  <svg viewBox="0 0 24 24" fill="none" stroke="#007aff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="15 18 9 12 15 6" />
+  </svg>
+</button>
 
   <h2 id="searchHeading">Search Results</h2>
   <div class="file-list" id="fileList"></div>
