@@ -288,7 +288,7 @@
             ${(app.descriptionHTML && app.descriptionHTML.length > 300) ? '<button id="desc-toggle-btn" class="collapse-btn" onclick="toggleDescription()">Show More</button>' : ''}
           </div>
 
-          <button class="download-btn" onclick="redirectToDownload()">Download Premium</button>
+          <button class="download-btn" onclick="redirectToDownload(${app.title})">Download Premium</button>
           <div id="download-card"></div>
 
           ${app.reviews && app.reviews.length ? `
@@ -310,8 +310,8 @@
       }
     }
 
-    function redirectToDownload() {
-  const appName = app.title; // or dynamically from app.title
+    function redirectToDownload(title1) {
+  const appName = title1; // or dynamically from app.title
   const logoURL = document.querySelector(".app-header img")?.src || "";
   const targetURL = `download.html?name=${encodeURIComponent(appName)}&logo=${encodeURIComponent(logoURL)}`;
   window.location.href = targetURL;
