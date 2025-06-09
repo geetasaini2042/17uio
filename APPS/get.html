@@ -11,25 +11,39 @@
       background-color: #f0f2f5;
     }
     .app-header {
-      display: flex;
-      align-items: center;
-      background-color: white;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .app-header img {
-      width: 80px;
-      height: 80px;
-      border-radius: 18px;
-      margin-right: 15px;
-    }
-    .app-title {
-      font-size: 24px;
-      font-weight: bold;
-    }
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+}
+
+.app-header img {
+  width: 80px;
+  height: 80px;
+  border-radius: 18px;
+  margin-right: 15px;
+}
+
+.app-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.app-summary {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.4;
+}
     table {
       width: 100%;
       background: #fff;
@@ -217,16 +231,14 @@
         const res = await fetch(`https://manish-bhaiyas-bot.onrender.com/api/app-details?package=${encodeURIComponent(packageName)}`);
         const app = await res.json();
         const shortDesc = truncateHTML(app.description || 'No description available.');
-
         container.innerHTML = `
           <div class="app-header">
             <img src="${app.icon}" alt="${app.title}" />
-            <div>
+            <div class="app-info">
               <div class="app-title">${app.title}</div>
-              <div>${app.summary || ''}</div>
-            </div>
-          </div>
-
+              <div class="app-summary">${app.summary || ''}</div>
+    </div>
+  </div>
           <table>
             <tr><th>Developer</th><td>${app.developer}</td></tr>
             <tr><th>Installs</th><td>${app.installs}</td></tr>
