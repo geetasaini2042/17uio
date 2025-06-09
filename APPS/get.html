@@ -151,21 +151,6 @@
       max-height: 90%;
       border-radius: 10px;
     }
-    .toast {
-  position: fixed;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333;
-  color: #fff;
-  padding: 12px 20px;
-  border-radius: 6px;
-  opacity: 0.9;
-  font-size: 14px;
-  z-index: 9999;
-}
-.toast.success { background: #4caf50; }
-.toast.error   { background: #f44336; }
     .zoom-close {
       position: absolute;
       top: 20px;
@@ -212,70 +197,7 @@
   <div id="app-details" class="loader">🔄 Loading App Info...</div>  <div id="zoomModal" class="zoom-modal" onclick="closeZoom()">
     <span class="zoom-close" onclick="closeZoom(event)">×</span>
     <img id="zoomImage" src="" alt="Zoomed Screenshot" />
-  </div> 
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script>
-  // Initialization
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-
-  // Get Telegram user_id
-  const user = tg.initDataUnsafe?.user;
-  const userId = user?.id;
-
-  // Suppose `files` is the array from your GET response
-  const files = /* your fetched array */;
-
-  const container = document.getElementById('download-card');
-  container.innerHTML = files.map(f => `
-    <div class="file-card">
-      <span>${f.file_name}</span>
-      <button data-file-id="${f.file_id}">Download</button>
-    </div>
-  `).join('');
-
-  container.addEventListener('click', async e => {
-    if (e.target.tagName !== 'BUTTON') return;
-    const fileId = e.target.getAttribute('data-file-id');
-    if (!userId) return alert('⚠️ User ID not found.');
-
-    try {
-      // Notify user of loading
-      const btn = e.target;
-      btn.disabled = true;
-      btn.textContent = 'Sending…';
-
-      const resp = await fetch(
-        `https://sainipankaj12.serv00.net/App/Pre/send.php?user_id=${userId}&file_id=${fileId}`
-      );
-      const ok = resp.ok;
-      btn.disabled = false;
-      btn.textContent = 'Download';
-
-      if (ok) {
-        showToast('✅ Link sent successfully!');
-      } else {
-        const errText = await resp.text();
-        showToast(`❌ Error: ${errText}`, true);
-      }
-    } catch (err) {
-      e.target.disabled = false;
-      e.target.textContent = 'Download';
-      showToast(`❌ Network error`, true);
-      console.error(err);
-    }
-  });
-
-  // Simple toast notifications
-  function showToast(msg, isError = false) {
-    const t = document.createElement('div');
-    t.className = 'toast ' + (isError ? 'error' : 'success');
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
-  }
-</script>
-  <script>
+  </div>  <script>
     const params = new URLSearchParams(window.location.search);
     const packageName = params.get('package');
     let descExpanded = false;
@@ -366,7 +288,7 @@
             ${(app.descriptionHTML && app.descriptionHTML.length > 300) ? '<button id="desc-toggle-btn" class="collapse-btn" onclick="toggleDescription()">Show More</button>' : ''}
           </div>
 
-          <button class="download-btn" onclick="fetchDownloadLink()">Download Premium</button>
+          <button class="download-btn" onclick="redirectToDownload()">Download Premium</button>
           <div id="download-card"></div>
 
           ${app.reviews && app.reviews.length ? `
@@ -388,23 +310,7 @@
       }
     }
 
-    async function fetchDownloadLink() {
-      const card = document.getElementById("download-card");
-      card.innerHTML = "🔄 Fetching download link...";
-      try {
-        const res = await fetch(`https://sainipankaj12.serv00.net/get.php?package=${encodeURIComponent(packageName)}`);
-        const url = await res.text();
-        card.innerHTML = `
-          <div class="confirm-card">
-            <div><strong>✅ Download Ready!</strong></div>
-            <a href="${url}" target="_blank">Download Confirm</a>
-          </div>
-        `;
-      } catch (err) {
-        card.innerHTML = "<div class='confirm-card'>❌ Failed to get download link.</div>";
-        console.error(err);
-      }
-    }
+    <button class="download-btn" onclick="redirectToDownload()">Download Premium</button>
 
     loadAppDetails();
   </script></body>
