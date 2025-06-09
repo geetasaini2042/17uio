@@ -1,148 +1,281 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TechHub</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
       --bg: #f0f2f5;
       --white: #fff;
-      --primary: #0088cc;
-    }
+      --text: #333;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --primary: #007aff;
+    }body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+}
 
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: var(--bg);
-    }
+header {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: var(--white);
+  box-shadow: 0 2px 4px var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 
-    .header {
-      display: flex;
-      align-items: center;
-      background: var(--white);
-      padding: 10px 15px;
-      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+#logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  margin-right: 10px;
+}
 
-    .logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      margin-right: 10px;
-    }
+#title {
+  flex-grow: 1;
+  font-size: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
 
-    .title {
-      font-size: 18px;
-      font-weight: bold;
-      flex: 1;
-    }
+#search-bar {
+  display: none;
+  flex-grow: 1;
+  animation: fadeIn 0.3s ease;
+}
 
-    .icon-btn {
-      background: none;
-      border: none;
-      font-size: 20px;
-      margin-left: 10px;
-      cursor: pointer;
-    }
+#search-bar input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
 
-    .search-input {
-      width: 100%;
-      padding: 8px 12px;
-      font-size: 16px;
-      margin: 10px 0;
-      display: none;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-    }
+#search-icon, #profile-pic {
+  width: 28px;
+  height: 28px;
+  margin-left: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
 
-    .app-list {
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-    }
+#search-icon:hover, #profile-pic:hover {
+  transform: scale(1.1);
+}
 
-    .app-card {
-      background: var(--white);
-      margin-bottom: 10px;
-      padding: 10px;
-      display: flex;
-      align-items: center;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+#search-icon {
+  filter: brightness(0.4);
+}
 
-    .app-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      margin-right: 15px;
-    }
+#profile-pic {
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-    .app-name {
-      font-size: 17px;
-      font-weight: 600;
-    }
+main {
+  padding: 10px 15px;
+}
+
+.app-card {
+  display: flex;
+  align-items: center;
+  background-color: var(--white);
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px var(--shadow);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.app-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px var(--shadow);
+}
+
+.app-card img {
+  width: 52px;
+  height: 52px;
+  margin-right: 15px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.app-card div {
+  font-size: 17px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#profile-card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  background: var(--white);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+  display: none;
+  text-align: center;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+#profile-card.active {
+  display: block;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+#profile-card img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+  object-fit: cover;
+}
+
+#profile-card button {
+  margin-top: 15px;
+  padding: 8px 16px;
+  font-size: 14px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#profile-card button:hover {
+  background: #005fc4;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  header {
+    flex-wrap: wrap;
+  }
+
+  #title {
+    margin-top: 5px;
+    width: 100%;
+    text-align: center;
+  }
+}
+
   </style>
 </head>
-<body>
+<body onclick="resetSearch(event)">
+  <header>
+    <img id="logo" src="logo.png" alt="Logo" />
+    <div id="title">TechHub</div>
+    <div id="search-bar">
+      <input type="text" id="search-input" placeholder="Search apps..." />
+    </div>
+    <img id="search-icon" src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Search" onclick="toggleSearch(event)" />
+    <img id="profile-pic" src="https://telegram.org/img/t_logo.png" alt="Profile" onclick="showProfile()" />
+  </header>  <main id="app-feed"></main>  <div id="profile-card">
+    <img id="profile-img" src="" alt="Profile Image">
+    <div id="profile-name">Telegram User</div>
+    <button onclick="hideProfile()">Close</button>
+  </div>  <script>
+    let userPhoto = "https://telegram.org/img/t_logo.png";
+    let userName = "Telegram User";
 
-  <div class="header">
-    <img src="logo.png" class="logo" alt="Logo" />
-    <div class="title">TechHub</div>
-    <button class="icon-btn" onclick="toggleSearch()">🔍</button>
-    <button class="icon-btn" onclick="Telegram.WebApp.openTelegramLink('https://t.me/your_bot')">📨</button>
-  </div>
-
-  <input type="text" id="searchBox" class="search-input" placeholder="Search apps..." oninput="renderApps()"/>
-
-  <div class="app-list" id="appList">
-    <!-- Apps will be loaded here -->
-  </div>
-
-  <script>
-    let apps = [];
-
-    function toggleSearch() {
-      const search = document.getElementById("searchBox");
-      search.style.display = search.style.display === "block" ? "none" : "block";
-      if (search.style.display === "block") search.focus();
+    function toggleSearch(event) {
+      event.stopPropagation();
+      const title = document.getElementById("title");
+      const searchBar = document.getElementById("search-bar");
+      const input = document.getElementById("search-input");
+      if (searchBar.style.display === "none" || !searchBar.style.display) {
+        title.style.display = "none";
+        searchBar.style.display = "block";
+        input.focus();
+      } else {
+        title.style.display = "block";
+        searchBar.style.display = "none";
+      }
     }
 
-    function renderApps() {
-      const container = document.getElementById("appList");
-      const query = document.getElementById("searchBox").value.toLowerCase();
-      container.innerHTML = "";
+    function resetSearch(event) {
+      const search = document.getElementById("search-bar");
+      const input = document.getElementById("search-input");
+      const icon = document.getElementById("search-icon");
+      const title = document.getElementById("title");
 
-      const filtered = apps.filter(app => app.name.toLowerCase().includes(query));
+      if (!search.contains(event.target) && event.target !== icon) {
+        search.style.display = "none";
+        title.style.display = "block";
+        input.value = "";
+      }
 
-      filtered.forEach(app => {
-        const div = document.createElement("div");
-        div.className = "app-card";
-        div.innerHTML = `
-          <img class="app-icon" src="${app.icon}" />
-          <div class="app-name">${app.name}</div>
-        `;
-        container.appendChild(div);
-      });
+      const card = document.getElementById("profile-card");
+      if (card.classList.contains("active") && !card.contains(event.target) && event.target !== document.getElementById("profile-pic")) {
+        hideProfile();
+      }
     }
 
-    fetch("feed.json")
-      .then(res => res.json())
-      .then(data => {
-        apps = data;
-        renderApps();
-      })
-      .catch(err => {
-        document.getElementById("appList").innerHTML = "<p style='padding:10px'>⚠️ Failed to load apps.</p>";
-        console.error("Error loading feed.json:", err);
-      });
-  </script>
+    document.getElementById("search-input").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        const query = e.target.value.trim();
+        if (query) window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+      }
+    });
 
-</body>
+    function showProfile() {
+      const card = document.getElementById("profile-card");
+      document.getElementById("profile-img").src = userPhoto;
+      document.getElementById("profile-name").textContent = userName;
+      card.classList.add("active");
+    }
+
+    function hideProfile() {
+      document.getElementById("profile-card").classList.remove("active");
+    }
+
+    async function loadFeed() {
+      try {
+        const response = await fetch("feed.json");
+        const apps = await response.json();
+        const feed = document.getElementById("app-feed");
+        apps.forEach(app => {
+          const div = document.createElement("div");
+          div.className = "app-card";
+          div.innerHTML = `
+            <img src="${app.icon}" alt="icon">
+            <div>${app.name}</div>
+          `;
+          div.onclick = () => {
+            window.location.href = `get.html?package=${encodeURIComponent(app.package)}`;
+          };
+          feed.appendChild(div);
+        });
+      } catch (err) {
+        console.error("Failed to load feed:", err);
+      }
+    }
+
+    window.onload = () => {
+      if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        userPhoto = user.photo_url || userPhoto;
+        userName = `${user.first_name || ""} ${user.last_name || ""}`.trim() || userName;
+        document.getElementById("profile-pic").src = userPhoto;
+      }
+      loadFeed();
+    };
+  </script></body>
 </html>
