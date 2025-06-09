@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,218 +12,225 @@
       --text: #333;
       --shadow: rgba(0, 0, 0, 0.1);
       --primary: #007aff;
-    }body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: var(--bg);
-  color: var(--text);
-}
+    }
 
-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
-  background-color: var(--white);
-  box-shadow: 0 2px 4px var(--shadow);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+    }
 
-#logo {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  margin-right: 10px;
-}
+    header {
+      background-color: var(--white);
+      padding: 10px 15px;
+      box-shadow: 0 2px 4px var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
 
-#title {
-  flex-grow: 1;
-  font-size: 20px;
-  font-weight: 600;
-  white-space: nowrap;
-}
+    .header-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 10px;
+    }
 
-#search-bar {
-  display: none;
-  flex-grow: 1;
-  animation: fadeIn 0.3s ease;
-}
+    #logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+    }
 
-#search-bar input {
-  width: 100%;
-  padding: 8px 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
+    #title {
+      font-size: 18px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-#search-icon, #profile-pic {
-  width: 28px;
-  height: 28px;
-  margin-left: 12px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
+    .spacer {
+      flex-grow: 1;
+    }
 
-#search-icon:hover, #profile-pic:hover {
-  transform: scale(1.1);
-}
+    #search-icon, #profile-pic {
+      width: 28px;
+      height: 28px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
 
-#search-icon {
-  filter: brightness(0.4);
-}
+    #search-icon:hover, #profile-pic:hover {
+      transform: scale(1.1);
+    }
 
-#profile-pic {
-  border-radius: 50%;
-  object-fit: cover;
-}
+    #search-icon {
+      filter: brightness(0.4);
+    }
 
-main {
-  padding: 10px 15px;
-}
+    #profile-pic {
+      border-radius: 50%;
+      object-fit: cover;
+    }
 
-.app-card {
-  display: flex;
-  align-items: center;
-  background-color: var(--white);
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  box-shadow: 0 1px 3px var(--shadow);
-  cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
+    #search-bar {
+      display: none;
+      margin-top: 8px;
+    }
 
-.app-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px var(--shadow);
-}
+    #search-bar input {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
 
-.app-card img {
-  width: 52px;
-  height: 52px;
-  margin-right: 15px;
-  border-radius: 10px;
-  object-fit: cover;
-}
+    main {
+      padding: 10px 15px;
+    }
 
-.app-card div {
-  font-size: 17px;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+    .app-card {
+      display: flex;
+      align-items: center;
+      background-color: var(--white);
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 10px;
+      box-shadow: 0 1px 3px var(--shadow);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
 
-#profile-card {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.95);
-  background: var(--white);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
-  display: none;
-  text-align: center;
-  z-index: 999;
-  transition: all 0.3s ease;
-}
+    .app-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px var(--shadow);
+    }
 
-#profile-card.active {
-  display: block;
-  transform: translate(-50%, -50%) scale(1);
-}
+    .app-card img {
+      width: 52px;
+      height: 52px;
+      margin-right: 15px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
 
-#profile-card img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-  object-fit: cover;
-}
+    .app-card div {
+      font-size: 17px;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-#profile-card button {
-  margin-top: 15px;
-  padding: 8px 16px;
-  font-size: 14px;
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
+    #profile-card {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      background: var(--white);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      display: none;
+      text-align: center;
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
 
-#profile-card button:hover {
-  background: #005fc4;
-}
+    #profile-card.active {
+      display: block;
+      transform: translate(-50%, -50%) scale(1);
+    }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+    #profile-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      object-fit: cover;
+    }
 
-@media (max-width: 600px) {
-  header {
-    flex-wrap: wrap;
-  }
+    #profile-card button {
+      margin-top: 15px;
+      padding: 8px 16px;
+      font-size: 14px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-  #title {
-    margin-top: 5px;
-    width: 100%;
-    text-align: center;
-  }
-}
+    #profile-card button:hover {
+      background: #005fc4;
+    }
 
+    @media (max-width: 600px) {
+      .header-row {
+        flex-wrap: wrap;
+      }
+
+      #title {
+        width: 100%;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body onclick="resetSearch(event)">
   <header>
-    <img id="logo" src="logo.png" alt="Logo" />
-    <div id="title">TechHub</div>
+    <div class="header-row">
+      <img id="logo" src="logo.png" alt="Logo" />
+      <div id="title">TechHub</div>
+      <div class="spacer"></div>
+      <img id="search-icon" src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Search" onclick="toggleSearch(event)" />
+      <img id="profile-pic" src="https://telegram.org/img/t_logo.png" alt="Profile" onclick="showProfile()" />
+    </div>
     <div id="search-bar">
       <input type="text" id="search-input" placeholder="Search apps..." />
     </div>
-    <img id="search-icon" src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Search" onclick="toggleSearch(event)" />
-    <img id="profile-pic" src="https://telegram.org/img/t_logo.png" alt="Profile" onclick="showProfile()" />
-  </header>  <main id="app-feed"></main>  <div id="profile-card">
+  </header>
+
+  <main id="app-feed"></main>
+
+  <div id="profile-card">
     <img id="profile-img" src="" alt="Profile Image">
     <div id="profile-name">Telegram User</div>
     <button onclick="hideProfile()">Close</button>
-  </div>  <script>
+  </div>
+
+  <script>
     let userPhoto = "https://telegram.org/img/t_logo.png";
     let userName = "Telegram User";
 
     function toggleSearch(event) {
       event.stopPropagation();
-      const title = document.getElementById("title");
       const searchBar = document.getElementById("search-bar");
       const input = document.getElementById("search-input");
       if (searchBar.style.display === "none" || !searchBar.style.display) {
-        title.style.display = "none";
         searchBar.style.display = "block";
         input.focus();
       } else {
-        title.style.display = "block";
         searchBar.style.display = "none";
+        input.value = "";
       }
     }
 
     function resetSearch(event) {
-      const search = document.getElementById("search-bar");
+      const searchBar = document.getElementById("search-bar");
       const input = document.getElementById("search-input");
       const icon = document.getElementById("search-icon");
-      const title = document.getElementById("title");
+      const card = document.getElementById("profile-card");
 
-      if (!search.contains(event.target) && event.target !== icon) {
-        search.style.display = "none";
-        title.style.display = "block";
+      if (!searchBar.contains(event.target) && event.target !== icon) {
+        searchBar.style.display = "none";
         input.value = "";
       }
 
-      const card = document.getElementById("profile-card");
       if (card.classList.contains("active") && !card.contains(event.target) && event.target !== document.getElementById("profile-pic")) {
         hideProfile();
       }
@@ -277,5 +285,6 @@ main {
       }
       loadFeed();
     };
-  </script></body>
+  </script>
+</body>
 </html>
