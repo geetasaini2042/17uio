@@ -9,191 +9,140 @@
     :root {
       --bg: #f0f2f5;
       --white: #fff;
-      --primary: #007bff;
-      --text: #333;
+      --primary: #0088cc;
     }
 
     body {
       margin: 0;
-      font-family: "Segoe UI", sans-serif;
-      background-color: var(--bg);
+      font-family: sans-serif;
+      background: var(--bg);
     }
 
-    header {
+    .header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background-color: var(--white);
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      background: var(--white);
+      padding: 10px 15px;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.1);
       position: sticky;
       top: 0;
-      z-index: 999;
+      z-index: 100;
     }
 
-    .back-icon {
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
       margin-right: 10px;
     }
 
-    #logo {
-      height: 32px;
-      margin-right: 8px;
-    }
-
-    #title {
-      font-size: 1.2rem;
+    .title {
+      font-size: 18px;
       font-weight: bold;
       flex: 1;
     }
 
-    #search-bar {
-      flex: 1;
-      display: none;
-    }
-
-    #search-bar input {
-      width: 100%;
-      padding: 8px 12px;
-      font-size: 1rem;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-    }
-
-    #search-icon,
-    #profile-pic {
-      width: 28px;
-      height: 28px;
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
       margin-left: 10px;
       cursor: pointer;
     }
 
-    #profile-pic {
-      border-radius: 50%;
+    .search-input {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 16px;
+      margin: 10px 0;
+      display: none;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
     }
 
-    #app-feed {
-      padding: 16px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 16px;
+    .app-list {
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
     }
 
     .app-card {
       background: var(--white);
+      margin-bottom: 10px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .app-icon {
+      width: 50px;
+      height: 50px;
       border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      margin-right: 15px;
     }
 
-    .app-card:hover {
-      transform: scale(1.03);
-    }
-
-    .app-card img {
-      width: 64px;
-      height: 64px;
-      object-fit: cover;
-      margin-bottom: 8px;
-      border-radius: 8px;
-    }
-
-    .app-card div {
-      font-size: 0.9rem;
-      color: var(--text);
+    .app-name {
+      font-size: 17px;
+      font-weight: 600;
     }
   </style>
 </head>
-<body onclick="resetSearch(event)">
-  <header>
-    <img src="https://cdn-icons-png.flaticon.com/512/93/93634.png" class="back-icon" onclick="window.history.back()" />
-    <img id="logo" src="logo.png" alt="Logo" />
-    <div id="title">TechHub</div>
-    <div id="search-bar">
-      <input type="text" id="search-input" placeholder="Search apps..." />
-    </div>
-    <img id="search-icon" src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Search" onclick="toggleSearch(event)" />
-    <img id="profile-pic" src="https://telegram.org/img/t_logo.png" alt="Profile" />
-  </header>
+<body>
 
-  <main id="app-feed"></main>
+  <div class="header">
+    <img src="logo.png" class="logo" alt="Logo" />
+    <div class="title">TechHub</div>
+    <button class="icon-btn" onclick="toggleSearch()">🔍</button>
+    <button class="icon-btn" onclick="Telegram.WebApp.openTelegramLink('https://t.me/your_bot')">📨</button>
+  </div>
+
+  <input type="text" id="searchBox" class="search-input" placeholder="Search apps..." oninput="renderApps()"/>
+
+  <div class="app-list" id="appList">
+    <!-- Apps will be loaded here -->
+  </div>
 
   <script>
-    function toggleSearch(event) {
-      event.stopPropagation();
-      const title = document.getElementById("title");
-      const searchBar = document.getElementById("search-bar");
-      const input = document.getElementById("search-input");
-      if (searchBar.style.display === "none" || !searchBar.style.display) {
-        title.style.display = "none";
-        searchBar.style.display = "block";
-        input.focus();
-      } else {
-        title.style.display = "block";
-        searchBar.style.display = "none";
-      }
+    let apps = [];
+
+    function toggleSearch() {
+      const search = document.getElementById("searchBox");
+      search.style.display = search.style.display === "block" ? "none" : "block";
+      if (search.style.display === "block") search.focus();
     }
 
-    function resetSearch(event) {
-      const search = document.getElementById("search-bar");
-      const input = document.getElementById("search-input");
-      const icon = document.getElementById("search-icon");
-      const title = document.getElementById("title");
+    function renderApps() {
+      const container = document.getElementById("appList");
+      const query = document.getElementById("searchBox").value.toLowerCase();
+      container.innerHTML = "";
 
-      if (!search.contains(event.target) && event.target !== icon) {
-        search.style.display = "none";
-        title.style.display = "block";
-        input.value = "";
-      }
+      const filtered = apps.filter(app => app.name.toLowerCase().includes(query));
+
+      filtered.forEach(app => {
+        const div = document.createElement("div");
+        div.className = "app-card";
+        div.innerHTML = `
+          <img class="app-icon" src="${app.icon}" />
+          <div class="app-name">${app.name}</div>
+        `;
+        container.appendChild(div);
+      });
     }
 
-    document.getElementById("search-input").addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        const query = e.target.value.trim();
-        if (query) window.location.href = `search.html?q=${encodeURIComponent(query)}`;
-      }
-    });
-
-    async function loadFeed() {
-      try {
-        const response = await fetch("feed.json");
-        const apps = await response.json();
-        const feed = document.getElementById("app-feed");
-
-        if (!apps.length) {
-          feed.innerHTML = "<p>No apps found.</p>";
-        }
-
-        apps.forEach(app => {
-          const div = document.createElement("div");
-          div.className = "app-card";
-          div.innerHTML = `
-            <img src="${app.icon}" alt="icon">
-            <div>${app.name}</div>
-          `;
-          div.onclick = () => {
-            window.location.href = \`get.html?package=\${encodeURIComponent(app.package)}\`;
-          };
-          feed.appendChild(div);
-        });
-      } catch (err) {
-        console.error("Feed load error:", err);
-        document.getElementById("app-feed").innerHTML = "<p style='text-align:center;color:gray;'>Failed to load apps. Check console.</p>";
-      }
-    }
-
-    window.onload = () => {
-      if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        document.getElementById("profile-pic").src = user.photo_url || "https://telegram.org/img/t_logo.png";
-      }
-      loadFeed();
-    };
+    fetch("feed.json")
+      .then(res => res.json())
+      .then(data => {
+        apps = data;
+        renderApps();
+      })
+      .catch(err => {
+        document.getElementById("appList").innerHTML = "<p style='padding:10px'>⚠️ Failed to load apps.</p>";
+        console.error("Error loading feed.json:", err);
+      });
   </script>
+
 </body>
 </html>
