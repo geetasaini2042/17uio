@@ -288,7 +288,7 @@
             ${(app.descriptionHTML && app.descriptionHTML.length > 300) ? '<button id="desc-toggle-btn" class="collapse-btn" onclick="toggleDescription()">Show More</button>' : ''}
           </div>
 
-          <button class="download-btn" onclick="redirectToDownload(${app.title})">Download Premium</button>
+          <button class="download-btn" onclick="redirectToDownload('${app.title.replace(/'/g, "\\'")}')">Download Premium</button>
           <div id="download-card"></div>
 
           ${app.reviews && app.reviews.length ? `
