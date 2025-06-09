@@ -311,7 +311,7 @@
     }
 
     function redirectToDownload() {
-  const appName = "instagram"; // or dynamically from app.title
+  const appName = ${app.title}; // or dynamically from app.title
   const logoURL = document.querySelector(".app-header img")?.src || "";
   const targetURL = `download.html?name=${encodeURIComponent(appName)}&logo=${encodeURIComponent(logoURL)}`;
   window.location.href = targetURL;
