@@ -1,0 +1,16 @@
+<button onclick="downloadViaOpenLink()" class="bg-green-600 text-white py-2 px-4 rounded">
+  Download (51.75 MB)
+</button>
+
+<script>
+  function downloadViaOpenLink() {
+    if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+      Telegram.WebApp.openLink("https://getmodsapk.com/dl-track/chatgpt-premium-apk/37023", {
+        try_instant_view: false
+      });
+    } else {
+      // Fallback for normal browser testing
+      window.open("https://getmodsapk.com/dl-track/chatgpt-premium-apk/37023", "_blank");
+    }
+  }
+</script>
