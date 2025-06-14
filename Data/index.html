@@ -1,16 +1,38 @@
-<button onclick="downloadViaOpenLink()" class="bg-green-600 text-white py-2 px-4 rounded">
-  Download (51.75 MB)
-</button>
-
-<script>
-  function downloadViaOpenLink() {
-    if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-      Telegram.WebApp.openLink("https://getmodsapk.com/dl-track/chatgpt-premium-apk/37023", {
-        try_instant_view: false
-      });
-    } else {
-      // Fallback for normal browser testing
-      window.open("https://getmodsapk.com/dl-track/chatgpt-premium-apk/37023", "_blank");
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Download via Telegram</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    button {
+      background-color: #0088cc;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
     }
-  }
-</script>
+  </style>
+</head>
+<body>
+
+  <button onclick="openInBrowser()">📥 Download (51.75 MB)</button>
+
+  <script>
+    function openInBrowser() {
+      const url = "https://getmodsapk.com/dl-track/chatgpt-premium-apk/37023";
+
+      if (window.Telegram && Telegram.WebApp) {
+        Telegram.WebApp.openLink(url, { try_instant_view: false });
+      } else {
+        // Fallback (for browser testing)
+        window.open(url, "_blank");
+      }
+    }
+  </script>
+
+</body>
+</html>
