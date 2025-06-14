@@ -1,0 +1,30 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gold gradient -->
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#FFA500"/>
+    </linearGradient>
+
+    <!-- Shadow filter -->
+    <filter id="iconShadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.3)" />
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="50" fill="url(#goldGradient)" filter="url(#iconShadow)" />
+
+  <!-- Crown -->
+  <path d="M40 50 L50 30 L60 50 L70 30 L80 50 L75 65 H45 Z" fill="white" stroke="#FFF" stroke-width="2"/>
+
+  <!-- Sparkle/star -->
+  <path d="M90 30 L94 38 L102 40 L94 42 L90 50 L86 42 L78 40 L86 38 Z"
+        fill="white" opacity="0.8"/>
+
+  <!-- Text -->
+  <text x="60" y="90" font-family="Arial, sans-serif" font-size="14" fill="#fff"
+        font-weight="bold" text-anchor="middle">
+    Premium
+  </text>
+</svg>
