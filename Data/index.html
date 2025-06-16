@@ -10,7 +10,8 @@
       padding: 20px;
       text-align: center;
     }
-    button {
+    a.button {
+      display: inline-block;
       background-color: #0088cc;
       color: white;
       padding: 12px 20px;
@@ -19,35 +20,40 @@
       font-size: 16px;
       cursor: pointer;
       width: 100%;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
 
   <h2>📥 Premium App Download</h2>
-  <button id="downloadBtn">Download Now</button>
+  <a id="downloadLink" class="button" href="#" target="_blank">Download Now</a>
 
   <script>
-    // Get URL parameter
+    // URL से 'url' parameter निकाले
     function getParam(key) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(key);
     }
 
     const downloadUrl = getParam("url");
+    const linkEl = document.getElementById("downloadLink");
 
-    document.getElementById("downloadBtn").addEventListener("click", function () {
-      if (downloadUrl) {
+    if (downloadUrl) {
+      linkEl.href = downloadUrl;
+      linkEl.addEventListener("click", function (e) {
         if (window.Telegram && Telegram.WebApp) {
+          e.preventDefault(); // default open रोकें
           Telegram.WebApp.openLink(downloadUrl, { try_instant_view: false });
-        } else {
-          // Fallback for normal browser
-          window.open(downloadUrl, "_blank");
         }
-      } else {
+      });
+    } else {
+      linkEl.href = "#";
+      linkEl.addEventListener("click", function (e) {
+        e.preventDefault();
         alert("❌ Download link not found in URL!");
-      }
-    });
+      });
+    }
   </script>
 
 </body>
