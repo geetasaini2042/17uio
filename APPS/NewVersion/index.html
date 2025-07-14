@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reward File Delivery</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="//libtl.com/sdk.js" data-zone="9429528" data-sdk="show_9429528"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1f4037, #99f2c8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      max-width: 90%;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    p { font-size: 1rem; margin-bottom: 1.5rem; }
+    .reward-btn {
+      background-color: #00ffcc;
+      color: #000;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎁 Unlock Your File</h1>
+    <p>Watch an ad to get your file.</p>
+    <button class="reward-btn" onclick="watchAd()">Watch Ad</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    const userId = tg.initDataUnsafe?.user?.id;
+
+    // Extract query parameters from URL
+    const query = new URLSearchParams(window.location.search);
+    const file_id = query.get("file_id");
+    const file_name = query.get("file_name");
+
+    function watchAd() {
+      if (!userId || !file_id || !file_name) {
+        alert("❌ Missing required data.");
+        return;
+      }
+
+      show_9429528().then(() => {
+        // Send to backend
+        fetch("/send_file", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            file_id: file_id,
+            file_name: file_name
+          })
+        });
+
+        tg.close(); // Close Mini App
+      }).catch(() => {
+        alert("❌ Ad Failed or Skipped");
+      });
+    }
+  </script>
+</body>
+</html>
