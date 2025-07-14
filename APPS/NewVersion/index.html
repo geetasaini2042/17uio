@@ -63,7 +63,7 @@
 
       show_9429528().then(() => {
         // Send to backend
-        fetch("/send_file", {
+        fetch("http://127.0.0.1:5000/send_file", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
