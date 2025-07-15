@@ -25,9 +25,16 @@
       backdrop-filter: blur(10px);
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       max-width: 90%;
+      width: 350px;
     }
-    h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
-    p { font-size: 1rem; margin-bottom: 1.5rem; }
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+    }
     .reward-btn {
       background-color: #00ffcc;
       color: #000;
@@ -37,39 +44,62 @@
       font-size: 1rem;
       cursor: pointer;
     }
+    .ad-container {
+      background-color: rgba(0, 0, 0, 0.3);
+      margin: 1rem 0;
+      padding: 0.5rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .ad-label {
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #ffd700;
+      margin-bottom: 0.3rem;
+    }
   </style>
 </head>
 <body>
-  <script type="text/javascript">
-	atOptions = {
-		'key' : '93c0f5cf1522f11bddefffb5b03e6c0d',
-		'format' : 'iframe',
-		'height' : 250,
-		'width' : 300,
-		'params' : {}
-	};
-  </script>
-  <script type="text/javascript" src="//www.highperformanceformat.com/93c0f5cf1522f11bddefffb5b03e6c0d/invoke.js"></script>
   <div class="container">
     <h1>🎁 Unlock Your File</h1>
-    <script type="text/javascript">
-	atOptions = {
-		'key' : '93c0f5cf1522f11bddefffb5b03e6c0d',
-		'format' : 'iframe',
-		'height' : 250,
-		'width' : 300,
-		'params' : {}
-	};
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/93c0f5cf1522f11bddefffb5b03e6c0d/invoke.js"></script>
-    <p>Watch an ad to get your file.</p>
-    <button class="reward-btn" onclick="watchAd()">Watch Ad</button>
- </div>
+
+    <div class="ad-container">
+      <div class="ad-label">📢 Advertisement</div>
+      <script type="text/javascript">
+        atOptions = {
+          'key' : '93c0f5cf1522f11bddefffb5b03e6c0d',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/93c0f5cf1522f11bddefffb5b03e6c0d/invoke.js"></script>
+    </div>
+
+    <p>Watch a rewarded ad to get your file.</p>
+
+    <button class="reward-btn" onclick="watchAd()">▶️ Watch Reward Ad</button>
+
+    <div class="ad-container">
+      <div class="ad-label">📢 Advertisement</div>
+      <script type="text/javascript">
+        atOptions = {
+          'key' : '93c0f5cf1522f11bddefffb5b03e6c0d',
+          'format' : 'iframe',
+          'height' : 250,
+          'width' : 300,
+          'params' : {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.highperformanceformat.com/93c0f5cf1522f11bddefffb5b03e6c0d/invoke.js"></script>
+    </div>
+  </div>
+
   <script>
     const tg = window.Telegram.WebApp;
     const userId = tg.initDataUnsafe?.user?.id;
 
-    // Extract query parameters from URL
     const query = new URLSearchParams(window.location.search);
     const file_id = query.get("file_id");
     const file_name = query.get("file_name");
@@ -80,28 +110,25 @@
         return;
       }
       show_9429528().then(() => {
-
-  fetch("https://premium-app123.onrender.com/send_file", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      user_id: userId,
-      file_id: file_id,
-      file_name: file_name
-    })
-  }).then(() => {
-    // ✅ Mini App बंद करो सिर्फ जब POST हो जाए
-    alert("✅ Reward Granted! Your File Sent Successfully");
-    tg.close();
-  }).catch((err) => {
-    alert("❌ File send error: " + err);
-  });
-
-}).catch(() => {
-  alert("❌ Ad Failed or Skipped");
-});
+        fetch("https://premium-app123.onrender.com/send_file", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            user_id: userId,
+            file_id: file_id,
+            file_name: file_name
+          })
+        }).then(() => {
+          alert("✅ Reward Granted! Your File Sent Successfully");
+          tg.close();
+        }).catch((err) => {
+          alert("❌ File send error: " + err);
+        });
+      }).catch(() => {
+        alert("❌ Ad Failed or Skipped");
+      });
     }
   </script>
 </body>
