@@ -61,7 +61,6 @@
         return;
       }
       show_9429528().then(() => {
-  alert("✅ Reward Granted!");
 
   fetch("https://premium-app123.onrender.com/send_file", {
     method: "POST",
@@ -75,6 +74,7 @@
     })
   }).then(() => {
     // ✅ Mini App बंद करो सिर्फ जब POST हो जाए
+    alert("✅ Reward Granted! Your File Sent Successfully");
     tg.close();
   }).catch((err) => {
     alert("❌ File send error: " + err);
