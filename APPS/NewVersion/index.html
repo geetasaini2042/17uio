@@ -13,9 +13,11 @@
       background: linear-gradient(135deg, #1f4037, #99f2c8);
       color: white;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 1rem;
     }
     .container {
       background-color: rgba(255, 255, 255, 0.1);
@@ -26,6 +28,7 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.2);
       max-width: 90%;
       width: 350px;
+      margin-top: 2rem;
     }
     h1 {
       font-size: 1.8rem;
@@ -57,12 +60,18 @@
       color: #ffd700;
       margin-bottom: 0.3rem;
     }
+    .native-ads {
+      width: 100%;
+      margin-top: 2rem;
+    }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h1>🎁 Unlock Your File</h1>
 
+    <!-- 🔷 First Ad -->
     <div class="ad-container">
       <div class="ad-label">📢 Advertisement</div>
       <script type="text/javascript">
@@ -80,11 +89,8 @@
     <p>Watch a rewarded ad to get your file.</p>
 
     <button class="reward-btn" onclick="watchAd()">▶️ Watch Reward Ad</button>
-    <div class="ad-container">
-      <div class="ad-label">📢 Advertisement</div>
-      <script async="async" data-cfasync="false" src="//pl27171750.profitableratecpm.com/7a942645e68a6b5fe3e3a543728b6e72/invoke.js"></script>
-      <div id="container-7a942645e68a6b5fe3e3a543728b6e72"></div>
-    </div>
+
+    <!-- 🔷 Third Ad -->
     <div class="ad-container">
       <div class="ad-label">📢 Advertisement</div>
       <script type="text/javascript">
@@ -98,6 +104,13 @@
       </script>
       <script type="text/javascript" src="//www.highperformanceformat.com/93c0f5cf1522f11bddefffb5b03e6c0d/invoke.js"></script>
     </div>
+  </div>
+
+  <!-- 🔶 Native Ads - BOTTOM OF PAGE -->
+  <div class="native-ads">
+    <div class="ad-label">📢 Sponsored Ads</div>
+    <script async="async" data-cfasync="false" src="//pl27171750.profitableratecpm.com/7a942645e68a6b5fe3e3a543728b6e72/invoke.js"></script>
+    <div id="container-7a942645e68a6b5fe3e3a543728b6e72"></div>
   </div>
 
   <script>
