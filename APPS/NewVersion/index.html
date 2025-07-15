@@ -60,25 +60,29 @@
         alert("❌ Missing required data.");
         return;
       }
-
       show_9429528().then(() => {
-        // Send to backend
-        fetch("http://127.0.0.1:5000/send_file", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            user_id: userId,
-            file_id: file_id,
-            file_name: file_name
-          })
-        });
+  alert("✅ Reward Granted!");
 
-        tg.close(); // Close Mini App
-      }).catch(() => {
-        alert("❌ Ad Failed or Skipped");
-      });
+  fetch("http://127.0.0.1:5000/send_file", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      user_id: userId,
+      file_id: file_id,
+      file_name: file_name
+    })
+  }).then(() => {
+    // ✅ Mini App बंद करो सिर्फ जब POST हो जाए
+    tg.close();
+  }).catch((err) => {
+    alert("❌ File send error: " + err);
+  });
+
+}).catch(() => {
+  alert("❌ Ad Failed or Skipped");
+});
     }
   </script>
 </body>
