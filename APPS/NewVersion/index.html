@@ -7,71 +7,126 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="//libtl.com/sdk.js" data-zone="9429528" data-sdk="show_9429528"></script>
   <style>
+    :root {
+      --primary-color: #00ffcc;
+      --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      --glass-bg: rgba(255, 255, 255, 0.12);
+      --glass-blur: blur(14px);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
+      padding: 1rem;
       font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #1f4037, #99f2c8);
-      color: white;
+      background: var(--bg-gradient);
+      color: #fff;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       min-height: 100vh;
-      padding: 1rem;
     }
+
     .container {
-      background-color: rgba(255, 255, 255, 0.1);
-      padding: 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
       border-radius: 20px;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      max-width: 90%;
-      width: 350px;
+      padding: 2rem;
       margin-top: 2rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 100%;
+      max-width: 400px;
+      animation: fadeIn 1s ease-in-out;
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     h1 {
-      font-size: 1.8rem;
+      font-size: 2rem;
       margin-bottom: 0.5rem;
     }
+
     p {
       font-size: 1rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
     }
+
     .reward-btn {
-      background-color: #00ffcc;
+      background-color: var(--primary-color);
       color: #000;
       border: none;
-      padding: 0.8rem 2rem;
+      padding: 0.9rem 2.2rem;
       border-radius: 50px;
-      font-size: 1rem;
+      font-size: 1.05rem;
       cursor: pointer;
+      transition: 0.3s ease;
+      font-weight: 600;
     }
+
+    .reward-btn:hover {
+      background-color: #02dab0;
+      transform: scale(1.05);
+    }
+
+    .reward-btn:disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     .ad-container {
-      background-color: rgba(0, 0, 0, 0.3);
-      margin: 1rem 0;
-      padding: 0.5rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      background-color: rgba(255, 255, 255, 0.08);
+      padding: 0.7rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      margin: 1.5rem 0;
     }
+
     .ad-label {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: bold;
       color: #ffd700;
       margin-bottom: 0.3rem;
     }
+
     .native-ads {
       width: 100%;
-      margin-top: 2rem;
+      max-width: 400px;
+      margin: 2rem 0;
+    }
+
+    .loading {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: #00ffcc;
+      animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .icon {
+      font-size: 2rem;
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <h1>🎁 Unlock Your File</h1>
+    <div class="icon">🎁</div>
+    <h1>Unlock Your App File</h1>
+    <p>Watch a rewarded ad to get access to your app.</p>
 
-    <!-- 🔷 First Ad -->
+    <!-- Ad 1 -->
     <div class="ad-container">
       <div class="ad-label">📢 Advertisement</div>
       <script type="text/javascript">
@@ -86,11 +141,10 @@
       <script type="text/javascript" src="//www.highperformanceformat.com/93c0f5cf1522f11bddefffb5b03e6c0d/invoke.js"></script>
     </div>
 
-    <p>Watch a rewarded ad to get your file.</p>
+    <button class="reward-btn" onclick="watchAd(this)">▶️ Watch Reward Ad</button>
+    <div class="loading" id="loading" style="display:none;">⏳ Sending App..</div>
 
-    <button class="reward-btn" onclick="watchAd()">▶️ Watch Reward Ad</button>
-
-    <!-- 🔷 Third Ad -->
+    <!-- Ad 2 -->
     <div class="ad-container">
       <div class="ad-label">📢 Advertisement</div>
       <script type="text/javascript">
@@ -106,7 +160,7 @@
     </div>
   </div>
 
-  <!-- 🔶 Native Ads - BOTTOM OF PAGE -->
+  <!-- Native Ads -->
   <div class="native-ads">
     <div class="ad-label">📢 Sponsored Ads</div>
     <script async="async" data-cfasync="false" src="//pl27171750.profitableratecpm.com/7a942645e68a6b5fe3e3a543728b6e72/invoke.js"></script>
@@ -116,16 +170,21 @@
   <script>
     const tg = window.Telegram.WebApp;
     const userId = tg.initDataUnsafe?.user?.id;
-
     const query = new URLSearchParams(window.location.search);
     const file_id = query.get("file_id");
     const file_name = query.get("file_name");
-
-    function watchAd() {
+    const uniq_id = query.get("uniq_id");
+    const file_size = query.get("file_size");
+    
+    function watchAd(button) {
       if (!userId || !file_id || !file_name) {
         alert("❌ Missing required data.");
         return;
       }
+
+      button.disabled = true;
+      document.getElementById("loading").style.display = "block";
+
       show_9429528().then(() => {
         fetch("https://premium-app123.onrender.com/send_file", {
           method: "POST",
@@ -135,16 +194,22 @@
           body: JSON.stringify({
             user_id: userId,
             file_id: file_id,
-            file_name: file_name
+            file_name: file_name,
+            uniq_id=uniq_id,
+            file_size=file_size
           })
         }).then(() => {
-          alert("✅ Reward Granted! Your File Sent Successfully");
+          alert("✅ Reward Granted! Your app has been sent.");
           tg.close();
         }).catch((err) => {
           alert("❌ File send error: " + err);
+          button.disabled = false;
+          document.getElementById("loading").style.display = "none";
         });
       }).catch(() => {
         alert("❌ Ad Failed or Skipped");
+        button.disabled = false;
+        document.getElementById("loading").style.display = "none";
       });
     }
   </script>
