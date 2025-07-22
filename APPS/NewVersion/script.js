@@ -1,1 +1,55 @@
-(function(){const _0x1a4f=['join','get','getElementById','display','block','https://premium-app123.onrender.com/send_file','✅ App sent! Check your Telegram.','❌ Missing required data.','href','❌ Ad Failed or Skipped','then','style','innerHTML','disabled','first_name','file_name','filter','https://t.me/apps_premiumBot?start=APK_','file_size','uniq_id','id','user','initDataUnsafe','?','search','user_id','POST','application/json'];(function(_0x3ef33b,_0x1a4fdc){const _0x3c430b=function(_0x31e7c5){while(--_0x31e7c5){_0x3ef33b['push'](_0x3ef33b['shift']());}};_0x3c430b(++_0x1a4fdc);}(_0x1a4f,0x76));const _0x4b2c=function(_0x3ef33b,_0x1a4fdc){_0x3ef33b=_0x3ef33b-0x0;let _0x3c430b=_0x1a4f[_0x3ef33b];return _0x3c430b;};const tg=window['Telegram'][_0x4b2c('0x1a')],usr=tg?.[_0x4b2c('0x1a')]?.[_0x4b2c('0x12')]||{},uid=usr?.[_0x4b2c('0x11')],fnm=[usr?.[_0x4b2c('0x11')],usr?.last_name][_0x4b2c('0x14')](Boolean)[_0x4b2c('0x10')](' '),q=new URLSearchParams(window['location'][_0x4b2c('0x1c')]),fid=q[_0x4b2c('0x0')](_0x4b2c('0x13')),fn=q[_0x4b2c('0x0')](_0x4b2c('0x16')),uq=q[_0x4b2c('0x0')](_0x4b2c('0x17')),fs=q[_0x4b2c('0x0')](_0x4b2c('0x15'));document[_0x4b2c('0x1')]('userInfo')[_0x4b2c('0xa')]='<span>User:</span> '+(fnm||'Anonymous')+'<span>File:</span> '+(fn||'-')+'<span>Size:</span> '+(fs||'-'),document[_0x4b2c('0x1')]('tgLink')[_0x4b2c('0x8')]=_0x4b2c('0x18')+uq,window['watchAd']=function(btn){if(!uid||!fid||!fn){alert(_0x4b2c('0x9'));return;}btn[_0x4b2c('0xb')]=true;document[_0x4b2c('0x1')]('loading')[_0x4b2c('0x7')][_0x4b2c('0x6')]=_0x4b2c('0x2'),show_9429528()[_0x4b2c('0x5')](()=>{fetch(_0x4b2c('0x3'),{method:_0x4b2c('0x1d'),headers:{'Content-Type':_0x4b2c('0x1e')},body:JSON['stringify']({user_id:uid,file_id:fid,file_name:fn,uniq_id:uq,file_size:fs})})[_0x4b2c('0x5')](()=>{alert(_0x4b2c('0x4')),document[_0x4b2c('0x1')]('linkContainer')[_0x4b2c('0x7')][_0x4b2c('0x6')]=_0x4b2c('0x2'),tg['close']();})['catch'](e=>{alert('❌ Send error: '+e),btn[_0x4b2c('0xb')]=false,document[_0x4b2c('0x1')]('loading')[_0x4b2c('0x7')][_0x4b2c('0x6')]='none';});})['catch'](()=>{alert(_0x4b2c('0x8')),btn[_0x4b2c('0xb')]=false,document[_0x4b2c('0x1')]('loading')[_0x4b2c('0x7')][_0x4b2c('0x6')]='none';});};})();
+const _0xabc = window["Telegram"]["WebApp"];
+const _0xde1 = _0xabc["initDataUnsafe"]?.["user"] || {};
+const _0x9b2 = _0xde1?.["id"];
+const _0xf3d = [_0xde1?.["first_name"], _0xde1?.["last_name"]]["filter"](Boolean)["join"](" ");
+
+const _0xqs = new URLSearchParams(window["location"]["search"]);
+const _0xid = _0xqs["get"]("file_id");
+const _0xfn = _0xqs["get"]("file_name");
+const _0xuid = _0xqs["get"]("uniq_id");
+const _0xfs = _0xqs["get"]("file_size");
+
+document["getElementById"]("userInfo")["innerHTML"] = `
+  <span>User:</span> ${_0xf3d || "Anonymous"}
+  <span>File:</span> ${_0xfn || "-"}
+  <span>Size:</span> ${_0xfs || "-"}
+`;
+
+document["getElementById"]("tgLink")["href"] = `https://t.me/apps_premiumBot?start=APK_${_0xuid}`;
+
+function _0xwtch(_0xb) {
+  if (!_0x9b2 || !_0xid || !_0xfn) {
+    alert("❌ Missing required data.");
+    return;
+  }
+  _0xb["disabled"] = true;
+  document["getElementById"]("loading")["style"]["display"] = "block";
+
+  show_9429528()["then"](() => {
+    fetch("https://premium-app123.onrender.com/send_file", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON["stringify"]({
+        "user_id": _0x9b2,
+        "file_id": _0xid,
+        "file_name": _0xfn,
+        "uniq_id": _0xuid,
+        "file_size": _0xfs
+      })
+    })["then"](() => {
+      alert("✅ App sent! Check your Telegram.");
+      document["getElementById"]("linkContainer")["style"]["display"] = "block";
+      _0xabc["close"]();
+    })["catch"]((_0xe) => {
+      alert("❌ Send error: " + _0xe);
+      _0xb["disabled"] = false;
+      document["getElementById"]("loading")["style"]["display"] = "none";
+    });
+  })["catch"](() => {
+    alert("❌ Ad Failed or Skipped");
+    _0xb["disabled"] = false;
+    document["getElementById"]("loading")["style"]["display"] = "none";
+  });
+}
