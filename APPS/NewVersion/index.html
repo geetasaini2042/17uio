@@ -7,7 +7,123 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="//libtl.com/sdk.js" data-zone="9429528" data-sdk="show_9429528"></script>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --primary: #00ffcc;
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --blur: blur(16px);
+      --border: rgba(255, 255, 255, 0.2);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+
+    p {
+      text-align: center;
+      opacity: 0.9;
+      margin-bottom: 1.2rem;
+    }
+
+    .info-box {
+      background: rgba(255,255,255,0.06);
+      border-radius: 15px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .info-box span {
+      display: block;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #000;
+      padding: 0.9rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      width: 100%;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: #02dab0;
+      transform: scale(1.03);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .loading {
+      text-align: center;
+      margin-top: 1rem;
+      color: var(--primary);
+      animation: pulse 1s infinite;
+      display: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .footer-link {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-top: 1.4rem;
+    }
+
+    .footer-link a {
+      color: var(--primary);
+      text-decoration: none;
+      word-break: break-all;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -28,6 +144,63 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe?.user || {};
+    const userId = user?.id;
+    const fullName = [user?.first_name, user?.last_name].filter(Boolean).join(" ");
+    const query = new URLSearchParams(window.location.search);
+
+    const file_id = query.get("file_id");
+    const file_name = query.get("file_name");
+    const uniq_id = query.get("uniq_id");
+    const file_size = query.get("file_size");
+
+    document.getElementById("userInfo").innerHTML = `
+      <span>User:</span> ${fullName || "Anonymous"}
+      <span>File:</span> ${file_name || "-"}
+      <span>Size:</span> ${file_size || "-"}
+    `;
+
+    document.getElementById("tgLink").href = `https://t.me/apps_premiumBot?start=APK_${uniq_id}`;
+
+    function watchAd(button) {
+      if (!userId || !file_id || !file_name) {
+        alert("❌ Missing required data.");
+        return;
+      }
+
+      button.disabled = true;
+      document.getElementById("loading").style.display = "block";
+
+      show_9429528().then(() => {
+        fetch("https://premium-app123.onrender.com/send_file", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: userId,
+            file_id: file_id,
+            file_name: file_name,
+            uniq_id: uniq_id,
+            file_size: file_size
+          })
+        })
+        .then(() => {
+          alert("✅ App sent! Check your Telegram.");
+          document.getElementById("linkContainer").style.display = "block";
+          tg.close();
+        })
+        .catch((err) => {
+          alert("❌ Send error: " + err);
+          button.disabled = false;
+          document.getElementById("loading").style.display = "none";
+        });
+      }).catch(() => {
+        alert("❌ Ad Failed or Skipped");
+        button.disabled = false;
+        document.getElementById("loading").style.display = "none";
+      });
+    }
+  </script>
 </body>
 </html>
