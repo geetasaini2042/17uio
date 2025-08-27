@@ -2,17 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Push Notification Demo</title>
 </head>
 <body>
-  <h1>Push Notification Test Page</h1>
-  <p>अगर सबकुछ सही है तो ये पेज open करते ही subscription save हो जाएगा।</p>
+  <h1>🔔 Push Notification Demo</h1>
+  <button onclick="subscribeUser()">Subscribe</button>
+  <button onclick="sendTest()">Send Test Notification</button>
 
-  <!-- Log output for debugging -->
+  <h3>Logs:</h3>
   <pre id="log"></pre>
 
-  <!-- External script -->
+  <!-- ✅ आपकी server वाली JS -->
   <script src="https://assets.edumate.life/Script/notification/noti.js"></script>
+
+  <script>
+    function log(msg) {
+      document.getElementById("log").textContent += msg + "\n";
+    }
+
+    async function subscribeUser() {
+      log("Subscribing user...");
+      try {
+        const res = await window.requestNotificationPermission();
+        log("✅ Subscribed: " + JSON.stringify(res));
+      } catch (e) {
+        log("❌ Error: " + e);
+      }
+    }
+
+    async function sendTest() {
+      log("Sending test notification...");
+      try {
+        const response = await fetch("https://assets.edumate.life/Script/notification/send-push.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: "Demo Notification",
+            body: "यह एक demo message है",
+            icon: "https://via.placeholder.com/128",
+            url: "https://google.com"
+          })
+        });
+        const result = await response.json();
+        log("📩 Server Response: " + JSON.stringify(result));
+      } catch (e) {
+        log("❌ Error: " + e);
+      }
+    }
+  </script>
 </body>
 </html>
