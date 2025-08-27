@@ -9,42 +9,60 @@
   <p>Browser पर push notification subscribe करने के लिए नीचे क्लिक करें:</p>
   <button id="subscribe">Subscribe</button>
 
+  <h3>Status / Debug:</h3>
+  <pre id="status"></pre>
+
   <script>
+    const statusEl = document.getElementById("status");
+
     // अपनी VAPID Public Key डालें
     const publicVapidKey = "BPl6x1qYR8I3HqZpdC306TBcmpOycTYC9JTBm69Qjj4VqAkiCJ6tqpOM2wh4ZBBicq6HTxnLCauXgkfTvFD2HAk";
 
-    // Subscribe function
-    async function subscribeUser() {
-      // Service Worker register करें
-      const register = await navigator.serviceWorker.register("/service-worker.js");
-
-      // Notification permission मांगें
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        alert("Permission denied!");
-        return;
-      }
-
-      // Push subscription बनाएं
-      const subscription = await register.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
-      });
-
-      // PHP server को subscription भेजें
-      await fetch("http://0.0.0.0:8000/save-subscription.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(subscription)
-      });
-
-      alert("Subscribed successfully!");
+    function logStatus(msg) {
+      statusEl.textContent += msg + "\n";
     }
 
-    // Button click event
+    async function subscribeUser() {
+      try {
+        logStatus("1️⃣ Registering service worker...");
+        const register = await navigator.serviceWorker.register("service-worker.js");
+        logStatus("✅ Service worker registered");
+
+        const permission = await Notification.requestPermission();
+        logStatus("Permission: " + permission);
+        if (permission !== "granted") {
+          logStatus("❌ Notification permission denied!");
+          return;
+        }
+
+        const subscription = await register.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+        });
+        logStatus("✅ Subscription object created");
+
+        const res = await fetch("http://0.0.0.0:8000/save-subscription.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(subscription)
+        });
+
+        const data = await res.json();
+        logStatus("Response from PHP: " + JSON.stringify(data));
+
+        if (data.success) {
+          logStatus("🎉 Subscribed successfully!");
+        } else {
+          logStatus("❌ Subscription failed!");
+        }
+
+      } catch (err) {
+        logStatus("❌ Error: " + err.message);
+      }
+    }
+
     document.getElementById("subscribe").addEventListener("click", subscribeUser);
 
-    // Helper function for VAPID key
     function urlBase64ToUint8Array(base64String) {
       const padding = "=".repeat((4 - base64String.length % 4) % 4);
       const base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
