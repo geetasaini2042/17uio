@@ -3,17 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Push Notification Demo</title>
+  <!-- noti.js include -->
+  <script src="https://assets.edumate.life/Script/notification/noti.js"></script>
 </head>
 <body>
-  <h1>🔔 Push Notification Demo</h1>
+  <h1>Push Notification Demo</h1>
   <button onclick="subscribeUser()">Subscribe</button>
-  <button onclick="sendTest()">Send Test Notification</button>
-
-  <h3>Logs:</h3>
   <pre id="log"></pre>
-
-  <!-- ✅ आपकी server वाली JS -->
-  <script src="https://assets.edumate.life/Script/notification/noti.js"></script>
 
   <script>
     function log(msg) {
@@ -23,28 +19,15 @@
     async function subscribeUser() {
       log("Subscribing user...");
       try {
-        const res = await window.requestNotificationPermission();
-        log("✅ Subscribed: " + JSON.stringify(res));
-      } catch (e) {
-        log("❌ Error: " + e);
-      }
-    }
+        const permission = await Notification.requestPermission();
+        log("Permission: " + permission);
 
-    async function sendTest() {
-      log("Sending test notification...");
-      try {
-        const response = await fetch("https://assets.edumate.life/Script/notification/send-push.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: "Demo Notification",
-            body: "यह एक demo message है",
-            icon: "https://via.placeholder.com/128",
-            url: "https://google.com"
-          })
-        });
-        const result = await response.json();
-        log("📩 Server Response: " + JSON.stringify(result));
+        if (permission !== "granted") {
+          log("❌ Permission denied");
+          return;
+        }
+
+        log("✅ Permission granted. Subscription handled automatically by noti.js.");
       } catch (e) {
         log("❌ Error: " + e);
       }
