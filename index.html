@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>Push Notification Demo</title>
+</head>
+<body>
+  <h1>GitHub Pages + PHP Push Demo</h1>
+  <p>Browser पर push notification subscribe करने के लिए नीचे क्लिक करें:</p>
+  <button id="subscribe">Subscribe</button>
+
+  <script>
+    // अपनी VAPID Public Key डालें
+    const publicVapidKey = "BPl6x1qYR8I3HqZpdC306TBcmpOycTYC9JTBm69Qjj4VqAkiCJ6tqpOM2wh4ZBBicq6HTxnLCauXgkfTvFD2HAk";
+
+    // Subscribe function
+    async function subscribeUser() {
+      // Service Worker register करें
+      const register = await navigator.serviceWorker.register("/service-worker.js");
+
+      // Notification permission मांगें
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        alert("Permission denied!");
+        return;
+      }
+
+      // Push subscription बनाएं
+      const subscription = await register.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+      });
+
+      // PHP server को subscription भेजें
+      await fetch("http://0.0.0.0:8000/save-subscription.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(subscription)
+      });
+
+      alert("Subscribed successfully!");
+    }
+
+    // Button click event
+    document.getElementById("subscribe").addEventListener("click", subscribeUser);
+
+    // Helper function for VAPID key
+    function urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/\-/g, "+").replace(/_/g, "/");
+      const rawData = atob(base64);
+      return Uint8Array.from([...rawData].map(c => c.charCodeAt(0)));
+    }
+  </script>
+</body>
+</html>
